@@ -105,7 +105,7 @@
                 var loader = new THREE.OBJLoader( manager );
                 loader.load( 'models/maddog.obj', function ( object ) {
 
-                    object.traverse( function ( child ) {
+                    /*object.traverse( function ( child ) {
 
                         if ( child instanceof THREE.Mesh ) {
 
@@ -113,7 +113,10 @@
 
                         }
 
-                    } );
+                    } );*/
+
+                    var material = new THREE.MeshLambertMaterial({color: 0x55B663});
+                    object.material = material;
 
                     object.position.y = - 80;
                     scene.add( object );
