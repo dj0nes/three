@@ -6,7 +6,7 @@
     },
     "geometries": [
         {
-            "uuid": "E00FFD8C-D77D-4ACA-A8B0-6AF105725FC9",
+            "uuid": "79095FB7-85B2-40B6-87B9-F3701943FCDA",
             "type": "BufferGeometry",
             "data": {
                 "attributes": {
@@ -34,18 +34,20 @@
         }],
     "materials": [
         {
-            "uuid": "343521DE-21BA-44EE-94E3-54C6254DBAC4",
+            "uuid": "339153E9-7FD7-43BD-9979-D914E7204706",
             "type": "MeshLambertMaterial",
             "name": "0X4EF0_WINDOW",
             "color": 16777215,
             "ambient": 16777215,
-            "emissive": 0
+            "emissive": 59452,
+            "wireframe": true
         }],
     "object": {
-        "uuid": "DFB1D9BA-958A-49C9-833A-9C9CD606AA58",
+        "uuid": "61B6C380-80A2-496E-B8F1-6E47CFA0B30D",
         "type": "Mesh",
-        "geometry": "E00FFD8C-D77D-4ACA-A8B0-6AF105725FC9",
-        "material": "343521DE-21BA-44EE-94E3-54C6254DBAC4",
-        "matrix": [0.5,0,0,0,0,0.5,0,0,0,0,0.5,0,0,0,0,1]
+        "name": "maddog_small",
+        "geometry": "79095FB7-85B2-40B6-87B9-F3701943FCDA",
+        "material": "339153E9-7FD7-43BD-9979-D914E7204706",
+        "matrix": [0.05000000074505806,0,0,0,0,0.05000000074505806,0,0,0,0,0.05000000074505806,0,0,0,0,1]
     }
 }
