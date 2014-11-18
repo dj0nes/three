@@ -103,7 +103,7 @@
                 // model
 
                 var loader = new THREE.OBJLoader( manager );
-                loader.load( 'models/male02.obj', function ( object ) {
+                loader.load( 'models/maddog-working.obj', function ( object ) {
 
                     object.traverse( function ( child ) {
 
@@ -118,7 +118,7 @@
                     //var material = new THREE.MeshLambertMaterial({color: 0x55B663});
                     //object.material = material;
 
-                    //object.scale.set(.100,.100,.100);
+                    object.scale.set(.05,.05,.05);
 
                     object.position.y = - 80;
                     scene.add( object );
@@ -173,6 +173,7 @@
                 camera.position.y += ( - mouseY - camera.position.y ) * .05;
 
                 camera.lookAt( scene.position );
+                scene.rotation.y += .01;
 
                 renderer.render( scene, camera );
 
