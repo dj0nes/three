@@ -11,6 +11,8 @@
                 color: #fff;
                 margin: 0px;
                 overflow: hidden;
+                height: 100vh;
+                width: 100vw;
             }
             #info {
                 color: #fff;
@@ -19,165 +21,107 @@
                 width: 100%;
                 text-align: center;
                 z-index: 100;
-                display:block;
+                display:none;
             }
             #info a, .button { color: #f00; font-weight: bold; text-decoration: underline; cursor: pointer }
         </style>
     </head>
 
-    <body>
+    <body id="container">
         <div id="info">
         <a href="http://threejs.org" target="_blank">three.js</a> - OBJLoader test
         </div>
 
         <script src="js/three.min.js"></script>
-        <script src="js/loaders/OBJLoader.js"></script>
+        <script src="js/jquery-2.1.3.min.js"></script>
 
         <script>
 
-            // stolen shamelessly from http://threejs.org/examples/#webgl_loader_obj
+            var context = $('#container');
 
-            var container;
+            var WIDTH = context.width(),
+              HEIGHT = context.height();
 
-            var camera, scene, renderer;
+            // set some camera attributes
+            var VIEW_ANGLE = 45,
+              ASPECT = WIDTH / HEIGHT,
+              NEAR = 0.001,
+              FAR = 1000;
 
-            var mouseX = 0, mouseY = 0;
+            // get the DOM element to attach to
+            // - assume we've got jQuery to hand
+            var $container = context;
 
-            var windowHalfX = window.innerWidth / 2;
-            var windowHalfY = window.innerHeight / 2;
+            // create a WebGL renderer, camera
+            // and a scene
+            var renderer = new THREE.WebGLRenderer();
+            var camera = new THREE.OrthographicCamera( WIDTH / - 2, WIDTH / 2, HEIGHT / 2, HEIGHT / - 2, NEAR, FAR );
+            
+
+            var scene = new THREE.Scene();
+
+            // add stuff to the scene
+
+            // set up the sphere vars
+            var radius = 100,
+                segments = 16,
+                rings = 16;
+
+            // create a new mesh with
+            // sphere geometry
+
+            var sphereMaterial = new THREE.MeshLambertMaterial(
+                                    {
+                                      color: 0xCC0000
+                                    });
+
+            var sphere = new THREE.Mesh(
+
+              new THREE.SphereGeometry(
+                radius,
+                segments,
+                rings),
+
+              sphereMaterial);
+
+            // add the sphere to the scene
+            scene.add(sphere);
+
+            var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+            var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+            var cube = new THREE.Mesh( geometry, material );
+            scene.add( cube );
+
+            // create a point light
+            var pointLight = new THREE.PointLight(0xFFFFFF);
+
+            // set its position
+            pointLight.position.x = WIDTH / 2;
+            pointLight.position.y = HEIGHT / 2;
+            pointLight.position.z = 1300;
+
+            // add to the scene
+            scene.add(pointLight);
 
 
-            init();
-            animate();
 
+            // add the camera to the scene
+            scene.add(camera);
 
-            function init() {
+            // the camera starts at 0,0,0
+            // so pull it back
+            camera.position.x = WIDTH / 2;
+            camera.position.y = HEIGHT / 2;
+            camera.position.z = ASPECT * 2;
 
-                container = document.createElement( 'div' );
-                document.body.appendChild( container );
+            // start the renderer
+            renderer.setSize(WIDTH, HEIGHT);
 
-                camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
-                camera.position.z = 100;
+            // attach the render-supplied DOM element
+            $container.append(renderer.domElement);
 
-                // scene
-
-                scene = new THREE.Scene();
-
-                var ambient = new THREE.AmbientLight( 0x101030 );
-                scene.add( ambient );
-
-                var directionalLight = new THREE.DirectionalLight( 0xffeedd );
-                directionalLight.position.set( 0, 0, 1 );
-                scene.add( directionalLight );
-
-                // texture
-
-                var manager = new THREE.LoadingManager();
-                manager.onProgress = function ( item, loaded, total ) {
-
-                    console.log( item, loaded, total );
-
-                };
-
-                var texture = new THREE.Texture();
-
-                var onProgress = function ( xhr ) {
-                    if ( xhr.lengthComputable ) {
-                        var percentComplete = xhr.loaded / xhr.total * 100;
-                        console.log( Math.round(percentComplete, 2) + '% downloaded' );
-                    }
-                };
-
-                var onError = function ( xhr ) {
-                };
-
-
-                var loader = new THREE.ImageLoader( manager );
-                loader.load( 'models/textures/UV_Grid_Sm.jpg', function ( image ) {
-
-                    texture.image = image;
-                    texture.needsUpdate = true;
-
-                } );
-
-                // model
-
-                var loader = new THREE.OBJLoader( manager );
-                loader.load( 'models/maddog-working.obj', function ( object ) {
-
-                    object.traverse( function ( child ) {
-
-                        if ( child instanceof THREE.Mesh ) {
-
-                            child.material.map = texture;
-
-                        }
-
-                    } );
-
-                    //var material = new THREE.MeshLambertMaterial({color: 0x55B663});
-                    //object.material = material;
-
-                    object.scale.set(.05,.05,.05);
-
-                    object.position.y = - 80;
-                    scene.add( object );
-
-                }, onProgress, onError );
-
-                //
-
-                renderer = new THREE.WebGLRenderer();
-                renderer.setSize( window.innerWidth, window.innerHeight );
-                container.appendChild( renderer.domElement );
-
-                document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-
-                //
-
-                window.addEventListener( 'resize', onWindowResize, false );
-
-            }
-
-            function onWindowResize() {
-
-                windowHalfX = window.innerWidth / 2;
-                windowHalfY = window.innerHeight / 2;
-
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-
-                renderer.setSize( window.innerWidth, window.innerHeight );
-
-            }
-
-            function onDocumentMouseMove( event ) {
-
-                mouseX = ( event.clientX - windowHalfX ) / 2;
-                mouseY = ( event.clientY - windowHalfY ) / 2;
-
-            }
-
-            //
-
-            function animate() {
-
-                requestAnimationFrame( animate );
-                render();
-
-            }
-
-            function render() {
-
-                camera.position.x += ( mouseX - camera.position.x ) * .05;
-                camera.position.y += ( - mouseY - camera.position.y ) * .05;
-
-                camera.lookAt( scene.position );
-                scene.rotation.y += .01;
-
-                renderer.render( scene, camera );
-
-            }
+            // draw!
+            renderer.render(scene, camera);
 
         </script>
 
