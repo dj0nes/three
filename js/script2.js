@@ -32,7 +32,12 @@ var lesson3 = {
     clock: null,
     stats: null,
     step: 0,
-    cube: null,
+    GRID_SIZE: 20,
+    CUBE_COUNT: 1000,
+    cubes: [],
+    cube_speeds: [],
+    cube_angles: [],
+    cube_positions: [],
 
     init: function() { // Initialization
 
@@ -40,14 +45,13 @@ var lesson3 = {
         this.scene = new THREE.Scene();
 
         var SCREEN_WIDTH = window.innerWidth,
-            SCREEN_HEIGHT = window.innerHeight,
-            GRID_SIZE = 20;
+            SCREEN_HEIGHT = window.innerHeight;
 
         // prepare camera
         var VIEW_ANGLE = 90, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 1, FAR = 1000;
         this.camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
         this.scene.add(this.camera);
-        this.camera.position.set(0, 10, 0);
+        this.camera.position.set(0, lesson3.GRID_SIZE + 5, 0);
         this.camera.lookAt(new THREE.Vector3(0,0,0));
 
         // prepare renderer
@@ -114,10 +118,10 @@ var lesson3 = {
 
         var geometry = new THREE.Geometry();
         geometry.vertices.push(new THREE.Vector3(0, 0.01, 0));
-        geometry.vertices.push(new THREE.Vector3(0, 0.01, GRID_SIZE));
-        geometry.vertices.push(new THREE.Vector3(1, 0.01, GRID_SIZE - 1));
-        geometry.vertices.push(new THREE.Vector3(0, 0.01, GRID_SIZE));
-        geometry.vertices.push(new THREE.Vector3(-1, 0.01, GRID_SIZE - 1));
+        geometry.vertices.push(new THREE.Vector3(0, 0.01, lesson3.GRID_SIZE));
+        geometry.vertices.push(new THREE.Vector3(1, 0.01, lesson3.GRID_SIZE - 1));
+        geometry.vertices.push(new THREE.Vector3(0, 0.01, lesson3.GRID_SIZE));
+        geometry.vertices.push(new THREE.Vector3(-1, 0.01, lesson3.GRID_SIZE - 1));
 
         var line = new THREE.Line(geometry, material);
 
@@ -132,18 +136,28 @@ var lesson3 = {
 
         var geometry = new THREE.Geometry();
         geometry.vertices.push(new THREE.Vector3(0, 0.01, 0));
-        geometry.vertices.push(new THREE.Vector3(GRID_SIZE, 0.01, 0));
-        geometry.vertices.push(new THREE.Vector3(GRID_SIZE - 1, 0.01, 1));
-        geometry.vertices.push(new THREE.Vector3(GRID_SIZE, 0.01, 0));
-        geometry.vertices.push(new THREE.Vector3(GRID_SIZE - 1, 0.01, -1));
+        geometry.vertices.push(new THREE.Vector3(lesson3.GRID_SIZE, 0.01, 0));
+        geometry.vertices.push(new THREE.Vector3(lesson3.GRID_SIZE - 1, 0.01, 1));
+        geometry.vertices.push(new THREE.Vector3(lesson3.GRID_SIZE, 0.01, 0));
+        geometry.vertices.push(new THREE.Vector3(lesson3.GRID_SIZE - 1, 0.01, -1));
 
         var line = new THREE.Line(geometry, material);
 
         this.scene.add(line);
 
 
+        for( var i = 0; i < lesson3.CUBE_COUNT; i++) {
+            lesson3.cubes[i] = make_a_box();
+            lesson3.cube_positions[i] = Math.random() * (lesson3.GRID_SIZE - .5 - .5) + .5;
+            lesson3.cube_angles[i] = Math.random() * ( lesson3.GRID_SIZE - .05 ) + .05;
+            lesson3.cube_speeds[i] = (Math.random() * ( .1 - .05 ) + .05) / ( 2 + lesson3.cube_positions[i]);
+            this.scene.add(lesson3.cubes[i]);
+        }
 
 
+
+
+/*
         var box1 = new THREE.BoxGeometry( 1, 1, 1 );
         var material = new THREE.MeshBasicMaterial( {
             color: 0x00ff00, 
@@ -152,9 +166,10 @@ var lesson3 = {
             transparent: true
         } );
         lesson3.cube = new THREE.Mesh( box1, material );
+        lesson3.cube.position.y = .5;
         this.scene.add( lesson3.cube );
 
-
+*/
         // add simple ground
         var groundGeometry = new THREE.PlaneGeometry(10, 10, 1, 1);
         ground = new THREE.Mesh(groundGeometry, new THREE.MeshLambertMaterial({
@@ -184,7 +199,7 @@ var lesson3 = {
         // add helpers:
 
         // 1. GridHelper
-        var gridHelper = new THREE.GridHelper(GRID_SIZE, 1); // first number is grid size, second is grid step
+        var gridHelper = new THREE.GridHelper(lesson3.GRID_SIZE, 1); // first number is grid size, second is grid step
         gridHelper.position = new THREE.Vector3(0, 0, 0);
         gridHelper.rotation = new THREE.Euler(0, 0, 0);
         gridHelper.setColors( 0x0000ff, 0x8d8d8d);
@@ -232,10 +247,17 @@ function animate() {
     render();
     update();
 
-    // move the cube, dammit!
-    lesson3.step += .02;
-    lesson3.cube.position.x = 0 + ( 1 * (Math.cos(lesson3.step)));
-    lesson3.cube.position.z = 0 + ( 1 * Math.sin(lesson3.step));
+    // move the cubez, dammit!
+    for( var i = 0; i < lesson3.CUBE_COUNT; i++) {
+        lesson3.cube_angles[i] += lesson3.cube_speeds[i];
+        lesson3.cubes[i].position.x = 0 + ( lesson3.cube_positions[i] * (Math.cos( lesson3.cube_angles[i] )) );
+        lesson3.cubes[i].position.z = 0 + ( lesson3.cube_positions[i] * Math.sin( lesson3.cube_angles[i] ));
+
+        lesson3.cubes[i].rotation.x += lesson3.cube_speeds[i];
+        lesson3.cubes[i].rotation.y += lesson3.cube_speeds[i];
+        lesson3.cubes[i].rotation.z += lesson3.cube_speeds[i];
+    }
+
 }
 
 // Update controls and stats
@@ -255,6 +277,25 @@ function render() {
 function initializeLesson() {
     lesson3.init();
     animate();
+}
+
+
+function make_a_box() {
+    var box = new THREE.BoxGeometry( 1, 1, 1 );
+    var material = new THREE.MeshBasicMaterial( {
+        color: new THREE.Color().setStyle('#'+('00000'+(Math.random()*(1<<24)|0).toString(16)).slice(-6)), 
+        opacity: .8, 
+        side: THREE.FrontSide,
+        transparent: false
+    } );
+    var cube = new THREE.Mesh( box, material );
+
+/*    cube.position.x = 1;
+    cube.position.z = 1;*/
+
+    cube.position.y = Math.random() * (.55 - .5) + .5;
+
+    return cube;
 }
 
 if (window.addEventListener)
