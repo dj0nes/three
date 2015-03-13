@@ -149,8 +149,11 @@ var lesson3 = {
         for( var i = 0; i < lesson3.CUBE_COUNT; i++) {
             lesson3.cubes[i] = make_a_box();
             lesson3.cube_positions[i] = Math.random() * (lesson3.GRID_SIZE - .5 - .5) + .5;
-            lesson3.cube_angles[i] = Math.random() * ( lesson3.GRID_SIZE - .05 ) + .05;
+            lesson3.cube_angles[i] = Math.PI / 4;
             lesson3.cube_speeds[i] = (Math.random() * ( .1 - .05 ) + .05) / ( 2 + lesson3.cube_positions[i]);
+            lesson3.cubes[i].position.x =  lesson3.cube_positions[i];
+            lesson3.cubes[i].position.z =  lesson3.cube_positions[i];
+            lesson3.cubes[i].rotation.y = Math.PI / 4;
             this.scene.add(lesson3.cubes[i]);
         }
 
@@ -244,8 +247,6 @@ var lesson3 = {
 // Animate the scene
 function animate() {
     requestAnimationFrame(animate);
-    render();
-    update();
 
     // move the cubez, dammit!
     for( var i = 0; i < lesson3.CUBE_COUNT; i++) {
@@ -257,6 +258,9 @@ function animate() {
         lesson3.cubes[i].rotation.y -= lesson3.cube_speeds[i];
         //lesson3.cubes[i].rotation.z += lesson3.cube_speeds[i];
     }
+
+    render();
+    update();
 
 }
 
@@ -293,7 +297,7 @@ function make_a_box() {
 /*    cube.position.x = 1;
     cube.position.z = 1;*/
 
-    cube.position.y = Math.random() * (.55 - .5) + .5;
+    cube.position.y = Math.random() * (.6 - .5) + .5;
 
     return cube;
 }
