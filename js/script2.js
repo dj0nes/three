@@ -253,9 +253,9 @@ function animate() {
         lesson3.cubes[i].position.x = 0 + ( lesson3.cube_positions[i] * (Math.cos( lesson3.cube_angles[i] )) );
         lesson3.cubes[i].position.z = 0 + ( lesson3.cube_positions[i] * Math.sin( lesson3.cube_angles[i] ));
 
-        lesson3.cubes[i].rotation.x += lesson3.cube_speeds[i];
-        lesson3.cubes[i].rotation.y += lesson3.cube_speeds[i];
-        lesson3.cubes[i].rotation.z += lesson3.cube_speeds[i];
+        //lesson3.cubes[i].rotation.x += lesson3.cube_speeds[i];
+        lesson3.cubes[i].rotation.y -= lesson3.cube_speeds[i];
+        //lesson3.cubes[i].rotation.z += lesson3.cube_speeds[i];
     }
 
 }
