@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>ThreeJS Board</title>
+        <title>ThreeJS Gametest</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -12,16 +12,16 @@
 
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/main.css">
+        <script src="js/modernizr-2.8.3.min.js"></script>
     </head>
     <body>
-        <div id="container">
-            <canvas></canvas>
-        </div>
+        <div id="basic-scene" class="demo-full"></div>
     </body>
     <foot>
-        <script src="./js/three.min.js"></script>
+        <script>
+            var demo = {"url": "js"};
+        </script>
+        <script src="./js/script.js"></script>
         <script src="./js/jquery-1.11.2.min.js"></script>
-        <script src="./js/Coordinates.js"></script>
-        <script src="./js/board.js"></script>
     </foot>
 </html>
