@@ -38,7 +38,8 @@ var lesson3 = {
         this.scene = new THREE.Scene();
 
         var SCREEN_WIDTH = window.innerWidth,
-            SCREEN_HEIGHT = window.innerHeight;
+            SCREEN_HEIGHT = window.innerHeight,
+            GRID_SIZE = 20;
 
         // prepare camera
         var VIEW_ANGLE = 90, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 1, FAR = 1000;
@@ -100,6 +101,47 @@ var lesson3 = {
 
 
 
+
+
+
+
+        var material = new THREE.LineBasicMaterial({
+            color: 0x00ff00
+        });
+
+
+        var geometry = new THREE.Geometry();
+        geometry.vertices.push(new THREE.Vector3(0, 0.01, 0));
+        geometry.vertices.push(new THREE.Vector3(0, 0.01, GRID_SIZE));
+        geometry.vertices.push(new THREE.Vector3(1, 0.01, GRID_SIZE - 1));
+        geometry.vertices.push(new THREE.Vector3(0, 0.01, GRID_SIZE));
+        geometry.vertices.push(new THREE.Vector3(-1, 0.01, GRID_SIZE - 1));
+
+        var line = new THREE.Line(geometry, material);
+
+        this.scene.add(line);
+
+
+
+        var material = new THREE.LineBasicMaterial({
+            color: 0xff0000
+        });
+
+
+        var geometry = new THREE.Geometry();
+        geometry.vertices.push(new THREE.Vector3(0, 0.01, 0));
+        geometry.vertices.push(new THREE.Vector3(GRID_SIZE, 0.01, 0));
+        geometry.vertices.push(new THREE.Vector3(GRID_SIZE - 1, 0.01, 1));
+        geometry.vertices.push(new THREE.Vector3(GRID_SIZE, 0.01, 0));
+        geometry.vertices.push(new THREE.Vector3(GRID_SIZE - 1, 0.01, -1));
+
+        var line = new THREE.Line(geometry, material);
+
+        this.scene.add(line);
+
+
+
+
         var box1 = new THREE.BoxGeometry( 1, 1, 1 );
         var material = new THREE.MeshBasicMaterial( {
             color: 0x00ff00, 
@@ -140,18 +182,21 @@ var lesson3 = {
         // add helpers:
 
         // 1. GridHelper
-        var gridHelper = new THREE.GridHelper(100, 1); // 500 is grid size, 20 is grid step
+        var gridHelper = new THREE.GridHelper(GRID_SIZE, 1); // first number is grid size, second is grid step
         gridHelper.position = new THREE.Vector3(0, 0, 0);
         gridHelper.rotation = new THREE.Euler(0, 0, 0);
+        gridHelper.setColors( 0x0000ff, 0x8d8d8d);
         this.scene.add(gridHelper);
 
-        var gridHelper2 = gridHelper.clone();
+
+
+        /*var gridHelper2 = gridHelper.clone();
         gridHelper2.rotation = new THREE.Euler(Math.PI / 2, 0, 0);
         this.scene.add(gridHelper2);
 
         var gridHelper3 = gridHelper.clone();
         gridHelper3.rotation = new THREE.Euler(Math.PI / 2, 0, Math.PI / 2);
-        this.scene.add(gridHelper3);
+        this.scene.add(gridHelper3);*/
 /*
         // 2. HemisphereLightHelper
         var hlightHelper = new THREE.HemisphereLightHelper(hemiLight, 50, 300); // 50 is sphere size, 300 is arrow length
