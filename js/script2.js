@@ -44,16 +44,16 @@ var lesson3 = {
         var VIEW_ANGLE = 90, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 1, FAR = 1000;
         this.camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
         this.scene.add(this.camera);
-        this.camera.position.set(0, 100, 0);
+        this.camera.position.set(0, 10, 0);
         this.camera.lookAt(new THREE.Vector3(0,0,0));
 
         // prepare renderer
-        this.renderer = new THREE.WebGLRenderer({antialias:true, alpha: false});
+        this.renderer = new THREE.WebGLRenderer({antialias:true, alpha: true});
         this.renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
         this.renderer.setClearColor(0xffffff);
 
-        this.renderer.shadowMapEnabled = true;
-        this.renderer.shadowMapSoft = true;
+        // this.renderer.shadowMapEnabled = true;
+        // this.renderer.shadowMapSoft = true;
 
         // prepare container
         this.container = document.createElement('div');
@@ -79,9 +79,9 @@ var lesson3 = {
         this.container.appendChild( this.stats.domElement );
 
         // add hemisphere light
-        var hemiLight = new THREE.HemisphereLight(0x0000ff, 0x00ff00, 0.4); 
-        hemiLight.color.setHSL(0.6, 1, 0.6);
-        hemiLight.groundColor.setHSL(0.095, 1, 0.75);
+        var hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 1); 
+        //hemiLight.color.setHSL(0.6, 1, 0.6);
+        //hemiLight.groundColor.setHSL(0.095, 1, 0.75);
         hemiLight.position.set(-200, 400, -200);
         this.scene.add(hemiLight);
 /*
@@ -97,10 +97,27 @@ var lesson3 = {
         spotLight.shadowCameraFov = 60;
         this.scene.add(spotLight);*/
 
+
+
+
+        var box1 = new THREE.BoxGeometry( 1, 1, 1 );
+        var material = new THREE.MeshBasicMaterial( {
+            color: 0x00ff00, 
+            opacity: .6, 
+            side: THREE.DoubleSide,
+            transparent: true
+        } );
+        var cube = new THREE.Mesh( box1, material );
+        this.scene.add( cube );
+
+
         // add simple ground
         var groundGeometry = new THREE.PlaneGeometry(10, 10, 1, 1);
         ground = new THREE.Mesh(groundGeometry, new THREE.MeshLambertMaterial({
-            color: 0xe3e3e3
+            color: 0xc42424,
+            opacity: .6,
+            side: THREE.DoubleSide, 
+            transparent: true
         }));
         ground.position.y = -.01;
         ground.rotation.x = - Math.PI / 2;
