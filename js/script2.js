@@ -41,10 +41,10 @@ var lesson3 = {
             SCREEN_HEIGHT = window.innerHeight;
 
         // prepare camera
-        var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 1, FAR = 10000;
+        var VIEW_ANGLE = 90, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 1, FAR = 1000;
         this.camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
         this.scene.add(this.camera);
-        this.camera.position.set(0, 1000, 0);
+        this.camera.position.set(0, 100, 0);
         this.camera.lookAt(new THREE.Vector3(0,0,0));
 
         // prepare renderer
@@ -84,30 +84,30 @@ var lesson3 = {
         hemiLight.groundColor.setHSL(0.095, 1, 0.75);
         hemiLight.position.set(-200, 400, -200);
         this.scene.add(hemiLight);
-
+/*
         // add point light
         var pointLight = new THREE.PointLight(0xffff00, 1.0);
         pointLight.position.set(300,300,300);
-        this.scene.add(pointLight);
+        this.scene.add(pointLight);*/
 
-        // add spot light
+/*        // add spot light
         var spotLight = new THREE.SpotLight(0xffffff);
         spotLight.position.set(-300,400,300);
         spotLight.castShadow = true;
         spotLight.shadowCameraFov = 60;
-        this.scene.add(spotLight);
+        this.scene.add(spotLight);*/
 
         // add simple ground
-        var groundGeometry = new THREE.PlaneGeometry(1200, 1200, 1, 1);
+        var groundGeometry = new THREE.PlaneGeometry(10, 10, 1, 1);
         ground = new THREE.Mesh(groundGeometry, new THREE.MeshLambertMaterial({
-            color: 0x9669FE
+            color: 0xe3e3e3
         }));
-        ground.position.y = -20;
+        ground.position.y = -.01;
         ground.rotation.x = - Math.PI / 2;
         ground.receiveShadow = true;
         this.scene.add(ground);
 
-        // create a new group (Object3D)
+/*        // create a new group (Object3D)
         var group = new THREE.Object3D();
 
         // add two spheres
@@ -118,12 +118,12 @@ var lesson3 = {
         group.add(sphere);
         group.add(sphere2);
 
-        this.scene.add(group);
+        this.scene.add(group);*/
 
         // add helpers:
 
         // 1. GridHelper
-        var gridHelper = new THREE.GridHelper(500, 40); // 500 is grid size, 20 is grid step
+        var gridHelper = new THREE.GridHelper(100, 1); // 500 is grid size, 20 is grid step
         gridHelper.position = new THREE.Vector3(0, 0, 0);
         gridHelper.rotation = new THREE.Euler(0, 0, 0);
         this.scene.add(gridHelper);
@@ -135,7 +135,7 @@ var lesson3 = {
         var gridHelper3 = gridHelper.clone();
         gridHelper3.rotation = new THREE.Euler(Math.PI / 2, 0, Math.PI / 2);
         this.scene.add(gridHelper3);
-
+/*
         // 2. HemisphereLightHelper
         var hlightHelper = new THREE.HemisphereLightHelper(hemiLight, 50, 300); // 50 is sphere size, 300 is arrow length
         this.scene.add(hlightHelper);
@@ -146,7 +146,7 @@ var lesson3 = {
 
         // 4. SpotLightHelper
         var spotLightHelper = new THREE.SpotLightHelper(spotLight, 50); // 50 is sphere size
-        this.scene.add(spotLightHelper);
+        this.scene.add(spotLightHelper);*/
 
     },
     drawSphere: function(x, z, material) {
