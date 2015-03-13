@@ -31,6 +31,8 @@ var lesson3 = {
     controls: null,
     clock: null,
     stats: null,
+    step: 0,
+    cube: null,
 
     init: function() { // Initialization
 
@@ -149,8 +151,8 @@ var lesson3 = {
             side: THREE.DoubleSide,
             transparent: true
         } );
-        var cube = new THREE.Mesh( box1, material );
-        this.scene.add( cube );
+        lesson3.cube = new THREE.Mesh( box1, material );
+        this.scene.add( lesson3.cube );
 
 
         // add simple ground
@@ -188,7 +190,9 @@ var lesson3 = {
         gridHelper.setColors( 0x0000ff, 0x8d8d8d);
         this.scene.add(gridHelper);
 
-
+        var gridHelper2 = gridHelper.clone();
+        gridHelper2.rotation = new THREE.Euler(Math.PI / 2, 0, 0);
+        this.scene.add(gridHelper2);
 
         /*var gridHelper2 = gridHelper.clone();
         gridHelper2.rotation = new THREE.Euler(Math.PI / 2, 0, 0);
@@ -227,6 +231,11 @@ function animate() {
     requestAnimationFrame(animate);
     render();
     update();
+
+    // move the cube, dammit!
+    lesson3.step += .02;
+    lesson3.cube.position.x = 0 + ( 1 * (Math.cos(lesson3.step)));
+    lesson3.cube.position.z = 0 + ( 1 * Math.sin(lesson3.step));
 }
 
 // Update controls and stats
