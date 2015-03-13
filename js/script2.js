@@ -33,7 +33,7 @@ var lesson3 = {
     stats: null,
     step: 0,
     GRID_SIZE: 20,
-    CUBE_COUNT: 1000,
+    CUBE_COUNT: 3,
     cubes: [],
     cube_speeds: [],
     cube_angles: [],
@@ -48,7 +48,7 @@ var lesson3 = {
             SCREEN_HEIGHT = window.innerHeight;
 
         // prepare camera
-        var VIEW_ANGLE = 90, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 1, FAR = 1000;
+        var VIEW_ANGLE = 90, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = .1, FAR = 1000;
         this.camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
         this.scene.add(this.camera);
         this.camera.position.set(0, lesson3.GRID_SIZE + 5, 0);
@@ -145,15 +145,16 @@ var lesson3 = {
 
         this.scene.add(line);
 
-
         for( var i = 0; i < lesson3.CUBE_COUNT; i++) {
             lesson3.cubes[i] = make_a_box();
             lesson3.cube_positions[i] = Math.random() * (lesson3.GRID_SIZE - .5 - .5) + .5;
+            //lesson3.cube_angles[i] = lesson3.cubes[i].rotation.y = Math.PI / 4;
+            lesson3.cubes[i].rotation.y = Math.PI;
             lesson3.cube_angles[i] = Math.PI / 4;
             lesson3.cube_speeds[i] = (Math.random() * ( .1 - .05 ) + .05) / ( 2 + lesson3.cube_positions[i]);
             lesson3.cubes[i].position.x =  lesson3.cube_positions[i];
             lesson3.cubes[i].position.z =  lesson3.cube_positions[i];
-            lesson3.cubes[i].rotation.y = Math.PI / 4;
+            lesson3.cubes[i].position.y = Math.random() * (.6 - .5) + .5; // randomize height in small interval to prevent z-fighting
             this.scene.add(lesson3.cubes[i]);
         }
 
@@ -253,10 +254,64 @@ function animate() {
         lesson3.cube_angles[i] += lesson3.cube_speeds[i];
         lesson3.cubes[i].position.x = 0 + ( lesson3.cube_positions[i] * (Math.cos( lesson3.cube_angles[i] )) );
         lesson3.cubes[i].position.z = 0 + ( lesson3.cube_positions[i] * Math.sin( lesson3.cube_angles[i] ));
+/*
+        if ( lesson3.cubes[i].position.x > .5) {
+            lesson3.cubes[i].rotation.x -= lesson3.cube_speeds[i];
+            //lesson3.cubes[i].rotation.z += lesson3.cube_speeds[i];
+        }
+        else {
+            lesson3.cubes[i].rotation.x += lesson3.cube_speeds[i];
+            //lesson3.cubes[i].rotation.z -= lesson3.cube_speeds[i];
+        }*/
 
-        //lesson3.cubes[i].rotation.x += lesson3.cube_speeds[i];
-        lesson3.cubes[i].rotation.y -= lesson3.cube_speeds[i];
-        //lesson3.cubes[i].rotation.z += lesson3.cube_speeds[i];
+
+/*        var euler = new THREE.Euler( 0, lesson3.cube_speeds[i], 0, 'YXZ' );
+        lesson3.cubes[i].rotation.applyEuler(euler);*/
+
+/*        var z_axis = new THREE.Vector3(0,0,1);
+        var rotObjectMatrix = new THREE.Matrix4();
+        rotObjectMatrix.makeRotationAxis(z_axis.normalize(), Math.PI * lesson3.cube_speeds[i] );
+        lesson3.cubes[i].matrix.multiply(rotObjectMatrix);
+        lesson3.cubes[i].rotation.setFromRotationMatrix(lesson3.cubes[i].matrix);*/
+
+/*        var y_axis = new THREE.Vector3(0,1,0);
+        var rotObjectMatrix = new THREE.Matrix4();
+        rotObjectMatrix.makeRotationAxis(y_axis.normalize(), -lesson3.cube_speeds[i] );
+        lesson3.cubes[i].matrix.multiply(rotObjectMatrix);
+        lesson3.cubes[i].rotation.setFromRotationMatrix(lesson3.cubes[i].matrix, "YXZ");*/
+
+/*        var x_axis = new THREE.Vector3(1,0,0);
+        var rotObjectMatrix = new THREE.Matrix4();
+        rotObjectMatrix.makeRotationAxis(x_axis.normalize(), -lesson3.cube_speeds[i] );
+        lesson3.cubes[i].matrix.multiply(rotObjectMatrix);
+        lesson3.cubes[i].rotation.setFromRotationMatrix(lesson3.cubes[i].matrix, "YXZ");*/
+
+/*        var y_axis = new THREE.Vector3(0,1,0);
+        var rotWorldMatrix = new THREE.Matrix4();
+        rotWorldMatrix.makeRotationAxis(y_axis.normalize(), Math.PI * lesson3.cube_speeds[i] );
+        rotWorldMatrix.multiply(lesson3.cubes[i].matrix); 
+        lesson3.cubes[i].matrix = rotWorldMatrix;
+        lesson3.cubes[i].rotation.setFromRotationMatrix(lesson3.cubes[i].matrix);*/
+
+        var euler_direction = "YXZ";
+        var x_axis = new THREE.Vector3(1,0,0);
+        rotateAroundObjectAxis(lesson3.cubes[i], x_axis, Math.PI * lesson3.cube_speeds[i], euler_direction);
+
+        var y_axis = new THREE.Vector3(0,1,0);
+        rotateAroundWorldAxis(lesson3.cubes[i], y_axis, -lesson3.cube_speeds[i], euler_direction);
+
+/*      // WORKS FOR GLOABL X AXIS
+        var x_axis = new THREE.Vector3(1,0,0);
+        var rotWorldMatrix = new THREE.Matrix4();
+        rotWorldMatrix.makeRotationAxis(x_axis.normalize(), Math.PI * lesson3.cube_speeds[i] );
+        rotWorldMatrix.multiply(lesson3.cubes[i].matrix); 
+        lesson3.cubes[i].matrix = rotWorldMatrix;
+        lesson3.cubes[i].rotation.setFromRotationMatrix(lesson3.cubes[i].matrix);*/
+
+
+        //lesson3.cubes[i].rotation.y -= lesson3.cube_speeds[i];
+        //lesson3.cubes[i].rotation.z -= lesson3.cube_speeds[i];
+        //lesson3.cubes[i].rotation.x -= lesson3.cube_speeds[i];
     }
 
     render();
@@ -293,14 +348,29 @@ function make_a_box() {
         transparent: false
     } );
     var cube = new THREE.Mesh( box, material );
-
-/*    cube.position.x = 1;
-    cube.position.z = 1;*/
-
-    cube.position.y = Math.random() * (.6 - .5) + .5;
-
     return cube;
 }
+
+// Rotate an object around an arbitrary axis in object space
+var rotObjectMatrix;
+function rotateAroundObjectAxis(object, axis, radians, direction) {
+    rotObjectMatrix = new THREE.Matrix4();
+    rotObjectMatrix.makeRotationAxis(axis.normalize(), radians);
+    object.matrix.multiply(rotObjectMatrix);
+    object.rotation.setFromRotationMatrix(object.matrix, direction);
+}
+
+var rotWorldMatrix;
+// Rotate an object around an arbitrary axis in world space       
+function rotateAroundWorldAxis(object, axis, radians, direction) {
+    rotWorldMatrix = new THREE.Matrix4();
+    rotWorldMatrix.makeRotationAxis(axis.normalize(), radians);
+    rotWorldMatrix.multiply(object.matrix);                // pre-multiply
+    object.matrix = rotWorldMatrix;
+    object.rotation.setFromRotationMatrix(object.matrix, direction);
+}
+
+
 
 if (window.addEventListener)
     window.addEventListener('load', initializeLesson, false);
