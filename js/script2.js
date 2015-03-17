@@ -33,7 +33,7 @@ var lesson3 = {
     stats: null,
     step: 0,
     GRID_SIZE: 20,
-    CUBE_COUNT: 3,
+    CUBE_COUNT: 500,
     cubes: [],
     cube_speeds: [],
     cube_angles: [],
@@ -128,11 +128,9 @@ var lesson3 = {
         this.scene.add(line);
 
 
-
         var material = new THREE.LineBasicMaterial({
             color: 0xff0000
         });
-
 
         var geometry = new THREE.Geometry();
         geometry.vertices.push(new THREE.Vector3(0, 0.01, 0));
@@ -147,15 +145,16 @@ var lesson3 = {
 
         for( var i = 0; i < lesson3.CUBE_COUNT; i++) {
             lesson3.cubes[i] = make_a_box();
-            //lesson3.cube_positions[i] = Math.random() * (lesson3.GRID_SIZE - .5 - .5) + .5;
-            lesson3.cube_positions[i] = Math.random() * (5 - .5 - .5) + .5;
+            lesson3.cube_positions[i] = Math.random() * (lesson3.GRID_SIZE - .5 - .5) + .5;
+            //lesson3.cube_positions[i] = Math.random() * (5 - .5 - .5) + .5;
             //lesson3.cube_angles[i] = lesson3.cubes[i].rotation.y = Math.PI / 4;
             //lesson3.cubes[i].rotation.y = Math.PI;
-            lesson3.cube_angles[i] = Math.PI / 4;
+            lesson3.cube_angles[i] = 0;
             //lesson3.cube_speeds[i] = (Math.random() * ( .1 - .05 ) + .05) / ( 2 + lesson3.cube_positions[i]);
-            lesson3.cube_speeds[i] = Math.PI / 240;
-            lesson3.cubes[i].position.x =  lesson3.cube_positions[i];
-            lesson3.cubes[i].position.z =  lesson3.cube_positions[i];
+            //lesson3.cube_speeds[i] = lesson3.cube_positions[i] * Math.PI / (240 * 10);
+            lesson3.cube_speeds[i] = Math.random() * (.02 - .005) + .008;
+            lesson3.cubes[i].position.x =  Math.cos( lesson3.cube_positions[i] );
+            lesson3.cubes[i].position.z =  Math.sin( lesson3.cube_positions[i] );
             lesson3.cubes[i].position.y = Math.random() * (.6 - .5) + .5; // randomize height in small interval to prevent z-fighting
             this.scene.add(lesson3.cubes[i]);
         }
@@ -254,8 +253,8 @@ function animate() {
     // move the cubez, dammit!
     for( var i = 0; i < lesson3.CUBE_COUNT; i++) {
         lesson3.cube_angles[i] += lesson3.cube_speeds[i];
-        //lesson3.cubes[i].position.x = 0 + ( lesson3.cube_positions[i] * (Math.cos( lesson3.cube_angles[i] )) );
-        //lesson3.cubes[i].position.z = 0 + ( lesson3.cube_positions[i] * Math.sin( lesson3.cube_angles[i] ));
+        lesson3.cubes[i].position.x = 0 + ( lesson3.cube_positions[i] * (Math.cos( lesson3.cube_angles[i] )) ); // change 0 to change center of rotation
+        lesson3.cubes[i].position.z = 0 + ( lesson3.cube_positions[i] * Math.sin( lesson3.cube_angles[i] ));
 /*
         if ( lesson3.cubes[i].position.x > .5) {
             lesson3.cubes[i].rotation.x -= lesson3.cube_speeds[i];
