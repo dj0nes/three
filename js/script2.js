@@ -86,7 +86,7 @@ var lesson3 = {
         this.container.appendChild( this.stats.domElement );
 
         // add hemisphere light
-        var hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 1); 
+        var hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
         //hemiLight.color.setHSL(0.6, 1, 0.6);
         //hemiLight.groundColor.setHSL(0.095, 1, 0.75);
         hemiLight.position.set(-200, 400, -200);
@@ -147,11 +147,13 @@ var lesson3 = {
 
         for( var i = 0; i < lesson3.CUBE_COUNT; i++) {
             lesson3.cubes[i] = make_a_box();
-            lesson3.cube_positions[i] = Math.random() * (lesson3.GRID_SIZE - .5 - .5) + .5;
+            //lesson3.cube_positions[i] = Math.random() * (lesson3.GRID_SIZE - .5 - .5) + .5;
+            lesson3.cube_positions[i] = Math.random() * (5 - .5 - .5) + .5;
             //lesson3.cube_angles[i] = lesson3.cubes[i].rotation.y = Math.PI / 4;
-            lesson3.cubes[i].rotation.y = Math.PI;
+            //lesson3.cubes[i].rotation.y = Math.PI;
             lesson3.cube_angles[i] = Math.PI / 4;
-            lesson3.cube_speeds[i] = (Math.random() * ( .1 - .05 ) + .05) / ( 2 + lesson3.cube_positions[i]);
+            //lesson3.cube_speeds[i] = (Math.random() * ( .1 - .05 ) + .05) / ( 2 + lesson3.cube_positions[i]);
+            lesson3.cube_speeds[i] = Math.PI / 240;
             lesson3.cubes[i].position.x =  lesson3.cube_positions[i];
             lesson3.cubes[i].position.z =  lesson3.cube_positions[i];
             lesson3.cubes[i].position.y = Math.random() * (.6 - .5) + .5; // randomize height in small interval to prevent z-fighting
@@ -179,7 +181,7 @@ var lesson3 = {
         ground = new THREE.Mesh(groundGeometry, new THREE.MeshLambertMaterial({
             color: 0xc42424,
             opacity: .6,
-            side: THREE.DoubleSide, 
+            side: THREE.DoubleSide,
             transparent: true
         }));
         ground.position.y = -.01;
@@ -252,8 +254,8 @@ function animate() {
     // move the cubez, dammit!
     for( var i = 0; i < lesson3.CUBE_COUNT; i++) {
         lesson3.cube_angles[i] += lesson3.cube_speeds[i];
-        lesson3.cubes[i].position.x = 0 + ( lesson3.cube_positions[i] * (Math.cos( lesson3.cube_angles[i] )) );
-        lesson3.cubes[i].position.z = 0 + ( lesson3.cube_positions[i] * Math.sin( lesson3.cube_angles[i] ));
+        //lesson3.cubes[i].position.x = 0 + ( lesson3.cube_positions[i] * (Math.cos( lesson3.cube_angles[i] )) );
+        //lesson3.cubes[i].position.z = 0 + ( lesson3.cube_positions[i] * Math.sin( lesson3.cube_angles[i] ));
 /*
         if ( lesson3.cubes[i].position.x > .5) {
             lesson3.cubes[i].rotation.x -= lesson3.cube_speeds[i];
@@ -300,6 +302,8 @@ function animate() {
         var y_axis = new THREE.Vector3(0,1,0);
         rotateAroundWorldAxis(lesson3.cubes[i], y_axis, -lesson3.cube_speeds[i], euler_direction);
 
+        //rotateAroundWorldAxis
+
 /*      // WORKS FOR GLOABL X AXIS
         var x_axis = new THREE.Vector3(1,0,0);
         var rotWorldMatrix = new THREE.Matrix4();
@@ -338,11 +342,10 @@ function initializeLesson() {
     animate();
 }
 
-
 function make_a_box() {
     var box = new THREE.BoxGeometry( 1, 1, 1 );
     var material = new THREE.MeshBasicMaterial( {
-        color: new THREE.Color().setStyle('#'+('00000'+(Math.random()*(1<<24)|0).toString(16)).slice(-6)), 
+        color: new THREE.Color().setStyle('#'+('00000'+(Math.random()*(1<<24)|0).toString(16)).slice(-6)),
         opacity: .8, 
         side: THREE.FrontSide,
         transparent: false
