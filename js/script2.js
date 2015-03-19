@@ -33,13 +33,17 @@ var lesson3 = {
     stats: null,
     step: 0,
     GRID_SIZE: 20,
-    CUBE_COUNT: 500,
+    CUBE_SIZE: 1,
+    CUBE_DIAGONAL: -1,
+    CUBE_COUNT: 100,
     cubes: [],
     cube_speeds: [],
     cube_angles: [],
     cube_positions: [],
 
     init: function() { // Initialization
+
+        lesson3.CUBE_DIAGONAL = Math.sqrt(this.CUBE_SIZE + this.CUBE_SIZE); // pythagorean for diagonal distance
 
         // create main scene
         this.scene = new THREE.Scene();
@@ -48,10 +52,10 @@ var lesson3 = {
             SCREEN_HEIGHT = window.innerHeight;
 
         // prepare camera
-        var VIEW_ANGLE = 90, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = .1, FAR = 1000;
+        var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = .1, FAR = 1000;
         this.camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
         this.scene.add(this.camera);
-        this.camera.position.set(0, lesson3.GRID_SIZE + 5, 0);
+        this.camera.position.set(0, lesson3.GRID_SIZE * 3, 0);
         this.camera.lookAt(new THREE.Vector3(0,0,0));
 
         // prepare renderer
@@ -143,7 +147,17 @@ var lesson3 = {
 
         this.scene.add(line);
 
-        for( var i = 0; i < lesson3.CUBE_COUNT; i++) {
+        // generate a "unit box"
+        lesson3.cubes[0] = make_a_box();
+        lesson3.cube_positions[0] = .5;
+        lesson3.cube_angles[0] = 0;
+        lesson3.cube_speeds[0] = .005;
+        lesson3.cubes[0].position.x =  Math.cos( lesson3.cube_positions[0] );
+        lesson3.cubes[0].position.z =  Math.sin( lesson3.cube_positions[0] );
+        lesson3.cubes[0].position.y = .5;
+        this.scene.add(lesson3.cubes[0]);
+
+        for( var i = 1; i < lesson3.CUBE_COUNT; i++) {
             lesson3.cubes[i] = make_a_box();
             lesson3.cube_positions[i] = Math.random() * (lesson3.GRID_SIZE - .5 - .5) + .5;
             //lesson3.cube_positions[i] = Math.random() * (5 - .5 - .5) + .5;
@@ -255,6 +269,8 @@ function animate() {
         lesson3.cube_angles[i] += lesson3.cube_speeds[i];
         lesson3.cubes[i].position.x = 0 + ( lesson3.cube_positions[i] * (Math.cos( lesson3.cube_angles[i] )) ); // change 0 to change center of rotation
         lesson3.cubes[i].position.z = 0 + ( lesson3.cube_positions[i] * Math.sin( lesson3.cube_angles[i] ));
+
+
 /*
         if ( lesson3.cubes[i].position.x > .5) {
             lesson3.cubes[i].rotation.x -= lesson3.cube_speeds[i];
@@ -296,10 +312,19 @@ function animate() {
 
         var euler_direction = "YXZ";
         var x_axis = new THREE.Vector3(1,0,0);
-        rotateAroundObjectAxis(lesson3.cubes[i], x_axis, Math.PI * lesson3.cube_speeds[i], euler_direction);
+        rotateAroundObjectAxis(lesson3.cubes[i], x_axis, Math.PI * lesson3.cube_speeds[i] + Math.sin( lesson3.cube_speeds[i] ), euler_direction);
 
         var y_axis = new THREE.Vector3(0,1,0);
         rotateAroundWorldAxis(lesson3.cubes[i], y_axis, -lesson3.cube_speeds[i], euler_direction);
+
+        console.info(lesson3.cubes[i].rotation.x + Math.PI/4);
+
+        // bounce factor
+        lesson3.cubes[i].position.y = .5 + Math.abs( Math.sin( (2 * lesson3.cubes[i].rotation.x + 0 ) ) / 5 );
+
+
+        // + Math.PI/4
+        
 
         //rotateAroundWorldAxis
 
