@@ -11,7 +11,7 @@
  */
 
 // load texture
-var texture = THREE.ImageUtils.loadTexture('images/texture.png');
+/*var texture = THREE.ImageUtils.loadTexture('images/texture.png');
 texture.repeat.set(10, 10);
 texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
 texture.anisotropy = 16;
@@ -21,7 +21,7 @@ var textureBump = THREE.ImageUtils.loadTexture('images/bump.png');
 textureBump.repeat.set(10, 10);
 textureBump.wrapS = textureBump.wrapT = THREE.RepeatWrapping;
 textureBump.anisotropy = 16;
-textureBump.needsUpdate = true;
+textureBump.needsUpdate = true;*/
 
 var lesson3 = {
     scene: null,
@@ -35,7 +35,7 @@ var lesson3 = {
     GRID_SIZE: 20,
     CUBE_SIZE: 1,
     CUBE_DIAGONAL: -1,
-    CUBE_COUNT: 100,
+    CUBE_COUNT: 250,
     cubes: [],
     cube_speeds: [],
     cube_angles: [],
@@ -61,10 +61,10 @@ var lesson3 = {
         // prepare renderer
         this.renderer = new THREE.WebGLRenderer({antialias:true, alpha: true});
         this.renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-        this.renderer.setClearColor(0xffffff);
+        //this.renderer.setClearColor(0xffffff);
 
-        // this.renderer.shadowMapEnabled = true;
-        // this.renderer.shadowMapSoft = true;
+        this.renderer.shadowMapEnabled = true;
+        this.renderer.shadowMapSoft = true;
 
         // prepare container
         this.container = document.createElement('div');
@@ -89,20 +89,26 @@ var lesson3 = {
         this.stats.domElement.style.zIndex = 10;
         this.container.appendChild( this.stats.domElement );
 
+
+
+
+        // LIGHTING
+
         // add hemisphere light
-        var hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
+        //var hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
         //hemiLight.color.setHSL(0.6, 1, 0.6);
         //hemiLight.groundColor.setHSL(0.095, 1, 0.75);
-        hemiLight.position.set(-200, 400, -200);
-        this.scene.add(hemiLight);
+        //hemiLight.position.set(-200, 400, -200);
+        //this.scene.add(hemiLight);
+
 /*
         // add point light
         var pointLight = new THREE.PointLight(0xffff00, 1.0);
         pointLight.position.set(300,300,300);
         this.scene.add(pointLight);*/
 
-/*        // add spot light
-        var spotLight = new THREE.SpotLight(0xffffff);
+        // add spot light
+/*        var spotLight = new THREE.SpotLight(0xffffff);
         spotLight.position.set(-300,400,300);
         spotLight.castShadow = true;
         spotLight.shadowCameraFov = 60;
@@ -114,7 +120,7 @@ var lesson3 = {
 
 
 
-
+        // add lines and arrows to mark x and z axes
         var material = new THREE.LineBasicMaterial({
             color: 0x00ff00
         });
@@ -190,7 +196,7 @@ var lesson3 = {
 
 */
         // add simple ground
-        var groundGeometry = new THREE.PlaneGeometry(10, 10, 1, 1);
+/*        var groundGeometry = new THREE.PlaneGeometry(10, 10, 1, 1);
         ground = new THREE.Mesh(groundGeometry, new THREE.MeshLambertMaterial({
             color: 0xc42424,
             opacity: .6,
@@ -200,7 +206,7 @@ var lesson3 = {
         ground.position.y = -.01;
         ground.rotation.x = - Math.PI / 2;
         ground.receiveShadow = true;
-        this.scene.add(ground);
+        this.scene.add(ground);*/
 
 /*        // create a new group (Object3D)
         var group = new THREE.Object3D();
