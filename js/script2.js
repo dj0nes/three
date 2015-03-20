@@ -35,7 +35,7 @@ var lesson3 = {
     GRID_SIZE: 20,
     CUBE_SIZE: 1,
     CUBE_DIAGONAL: -1,
-    CUBE_COUNT: 250,
+    CUBE_COUNT: 3000,
     cubes: [],
     cube_speeds: [],
     cube_angles: [],
@@ -266,86 +266,18 @@ var lesson3 = {
     }
 };
 
+
+var euler_direction = "YXZ";
+var x_axis = new THREE.Vector3(1,0,0);
+var y_axis = new THREE.Vector3(0,1,0);
+
 // Animate the scene
 function animate() {
     requestAnimationFrame(animate);
 
     // move the cubez, dammit!
     for( var i = 0; i < lesson3.CUBE_COUNT; i++) {
-        lesson3.cube_angles[i] += lesson3.cube_speeds[i];
-        lesson3.cubes[i].position.x = 0 + ( lesson3.cube_positions[i] * (Math.cos( lesson3.cube_angles[i] )) ); // change 0 to change center of rotation
-        lesson3.cubes[i].position.z = 0 + ( lesson3.cube_positions[i] * Math.sin( lesson3.cube_angles[i] ));
-
-
-/*
-        if ( lesson3.cubes[i].position.x > .5) {
-            lesson3.cubes[i].rotation.x -= lesson3.cube_speeds[i];
-            //lesson3.cubes[i].rotation.z += lesson3.cube_speeds[i];
-        }
-        else {
-            lesson3.cubes[i].rotation.x += lesson3.cube_speeds[i];
-            //lesson3.cubes[i].rotation.z -= lesson3.cube_speeds[i];
-        }*/
-
-
-/*        var euler = new THREE.Euler( 0, lesson3.cube_speeds[i], 0, 'YXZ' );
-        lesson3.cubes[i].rotation.applyEuler(euler);*/
-
-/*        var z_axis = new THREE.Vector3(0,0,1);
-        var rotObjectMatrix = new THREE.Matrix4();
-        rotObjectMatrix.makeRotationAxis(z_axis.normalize(), Math.PI * lesson3.cube_speeds[i] );
-        lesson3.cubes[i].matrix.multiply(rotObjectMatrix);
-        lesson3.cubes[i].rotation.setFromRotationMatrix(lesson3.cubes[i].matrix);*/
-
-/*        var y_axis = new THREE.Vector3(0,1,0);
-        var rotObjectMatrix = new THREE.Matrix4();
-        rotObjectMatrix.makeRotationAxis(y_axis.normalize(), -lesson3.cube_speeds[i] );
-        lesson3.cubes[i].matrix.multiply(rotObjectMatrix);
-        lesson3.cubes[i].rotation.setFromRotationMatrix(lesson3.cubes[i].matrix, "YXZ");*/
-
-/*        var x_axis = new THREE.Vector3(1,0,0);
-        var rotObjectMatrix = new THREE.Matrix4();
-        rotObjectMatrix.makeRotationAxis(x_axis.normalize(), -lesson3.cube_speeds[i] );
-        lesson3.cubes[i].matrix.multiply(rotObjectMatrix);
-        lesson3.cubes[i].rotation.setFromRotationMatrix(lesson3.cubes[i].matrix, "YXZ");*/
-
-/*        var y_axis = new THREE.Vector3(0,1,0);
-        var rotWorldMatrix = new THREE.Matrix4();
-        rotWorldMatrix.makeRotationAxis(y_axis.normalize(), Math.PI * lesson3.cube_speeds[i] );
-        rotWorldMatrix.multiply(lesson3.cubes[i].matrix); 
-        lesson3.cubes[i].matrix = rotWorldMatrix;
-        lesson3.cubes[i].rotation.setFromRotationMatrix(lesson3.cubes[i].matrix);*/
-
-        var euler_direction = "YXZ";
-        var x_axis = new THREE.Vector3(1,0,0);
-        rotateAroundObjectAxis(lesson3.cubes[i], x_axis, Math.PI * lesson3.cube_speeds[i] + Math.sin( lesson3.cube_speeds[i] ), euler_direction);
-
-        var y_axis = new THREE.Vector3(0,1,0);
-        rotateAroundWorldAxis(lesson3.cubes[i], y_axis, -lesson3.cube_speeds[i], euler_direction);
-
-        console.info(lesson3.cubes[i].rotation.x + Math.PI/4);
-
-        // bounce factor
-        lesson3.cubes[i].position.y = .5 + Math.abs( Math.sin( (2 * lesson3.cubes[i].rotation.x + 0 ) ) / 5 );
-
-
-        // + Math.PI/4
-        
-
-        //rotateAroundWorldAxis
-
-/*      // WORKS FOR GLOABL X AXIS
-        var x_axis = new THREE.Vector3(1,0,0);
-        var rotWorldMatrix = new THREE.Matrix4();
-        rotWorldMatrix.makeRotationAxis(x_axis.normalize(), Math.PI * lesson3.cube_speeds[i] );
-        rotWorldMatrix.multiply(lesson3.cubes[i].matrix); 
-        lesson3.cubes[i].matrix = rotWorldMatrix;
-        lesson3.cubes[i].rotation.setFromRotationMatrix(lesson3.cubes[i].matrix);*/
-
-
-        //lesson3.cubes[i].rotation.y -= lesson3.cube_speeds[i];
-        //lesson3.cubes[i].rotation.z -= lesson3.cube_speeds[i];
-        //lesson3.cubes[i].rotation.x -= lesson3.cube_speeds[i];
+        do_transforms(i);
     }
 
     render();
@@ -370,6 +302,17 @@ function render() {
 function initializeLesson() {
     lesson3.init();
     animate();
+}
+
+function do_transforms(i) {
+    lesson3.cube_angles[i] += lesson3.cube_speeds[i];
+    lesson3.cubes[i].position.x = 0 + ( lesson3.cube_positions[i] * (Math.cos( lesson3.cube_angles[i] )) ); // change 0 to change center of rotation
+    lesson3.cubes[i].position.z = 0 + ( lesson3.cube_positions[i] * Math.sin( lesson3.cube_angles[i] ));
+    rotateAroundObjectAxis(lesson3.cubes[i], x_axis, Math.PI * lesson3.cube_speeds[i] + Math.sin( lesson3.cube_speeds[i] ), euler_direction);
+    rotateAroundWorldAxis(lesson3.cubes[i], y_axis, -lesson3.cube_speeds[i], euler_direction);
+
+    // bounce factor
+    lesson3.cubes[i].position.y = .5 + Math.abs( Math.sin( (2 * lesson3.cubes[i].rotation.x + 0 ) ) / 5 );
 }
 
 function make_a_box() {
