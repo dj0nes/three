@@ -1,15 +1,3 @@
-/**
- *
- * WebGL With Three.js - Lesson 3
- * http://www.script-tutorials.com/webgl-with-three-js-lesson-3/
- *
- * Licensed under the MIT license.
- * http://www.opensource.org/licenses/mit-license.php
- * 
- * Copyright 2013, Script Tutorials
- * http://www.script-tutorials.com/
- */
-
 // load texture
 /*var texture = THREE.ImageUtils.loadTexture('images/texture.png');
 texture.repeat.set(10, 10);
@@ -23,7 +11,7 @@ textureBump.wrapS = textureBump.wrapT = THREE.RepeatWrapping;
 textureBump.anisotropy = 16;
 textureBump.needsUpdate = true;*/
 
-var lesson3 = {
+var page = {
     scene: null,
     camera: null,
     renderer: null,
@@ -35,7 +23,7 @@ var lesson3 = {
     GRID_SIZE: 20,
     CUBE_SIZE: 1,
     CUBE_DIAGONAL: -1,
-    CUBE_COUNT: 3000,
+    CUBE_COUNT: 500,
     cubes: [],
     cube_speeds: [],
     cube_angles: [],
@@ -43,7 +31,7 @@ var lesson3 = {
 
     init: function() { // Initialization
 
-        lesson3.CUBE_DIAGONAL = Math.sqrt(this.CUBE_SIZE + this.CUBE_SIZE); // pythagorean for diagonal distance
+        page.CUBE_DIAGONAL = Math.sqrt(this.CUBE_SIZE + this.CUBE_SIZE); // pythagorean for diagonal distance
 
         // create main scene
         this.scene = new THREE.Scene();
@@ -55,7 +43,7 @@ var lesson3 = {
         var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = .1, FAR = 1000;
         this.camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
         this.scene.add(this.camera);
-        this.camera.position.set(0, lesson3.GRID_SIZE * 3, 0);
+        this.camera.position.set(0, page.GRID_SIZE * 3, 0);
         this.camera.lookAt(new THREE.Vector3(0,0,0));
 
         // prepare renderer
@@ -128,10 +116,10 @@ var lesson3 = {
 
         var geometry = new THREE.Geometry();
         geometry.vertices.push(new THREE.Vector3(0, 0.01, 0));
-        geometry.vertices.push(new THREE.Vector3(0, 0.01, lesson3.GRID_SIZE));
-        geometry.vertices.push(new THREE.Vector3(1, 0.01, lesson3.GRID_SIZE - 1));
-        geometry.vertices.push(new THREE.Vector3(0, 0.01, lesson3.GRID_SIZE));
-        geometry.vertices.push(new THREE.Vector3(-1, 0.01, lesson3.GRID_SIZE - 1));
+        geometry.vertices.push(new THREE.Vector3(0, 0.01, page.GRID_SIZE));
+        geometry.vertices.push(new THREE.Vector3(1, 0.01, page.GRID_SIZE - 1));
+        geometry.vertices.push(new THREE.Vector3(0, 0.01, page.GRID_SIZE));
+        geometry.vertices.push(new THREE.Vector3(-1, 0.01, page.GRID_SIZE - 1));
 
         var line = new THREE.Line(geometry, material);
 
@@ -144,39 +132,39 @@ var lesson3 = {
 
         var geometry = new THREE.Geometry();
         geometry.vertices.push(new THREE.Vector3(0, 0.01, 0));
-        geometry.vertices.push(new THREE.Vector3(lesson3.GRID_SIZE, 0.01, 0));
-        geometry.vertices.push(new THREE.Vector3(lesson3.GRID_SIZE - 1, 0.01, 1));
-        geometry.vertices.push(new THREE.Vector3(lesson3.GRID_SIZE, 0.01, 0));
-        geometry.vertices.push(new THREE.Vector3(lesson3.GRID_SIZE - 1, 0.01, -1));
+        geometry.vertices.push(new THREE.Vector3(page.GRID_SIZE, 0.01, 0));
+        geometry.vertices.push(new THREE.Vector3(page.GRID_SIZE - 1, 0.01, 1));
+        geometry.vertices.push(new THREE.Vector3(page.GRID_SIZE, 0.01, 0));
+        geometry.vertices.push(new THREE.Vector3(page.GRID_SIZE - 1, 0.01, -1));
 
         var line = new THREE.Line(geometry, material);
 
         this.scene.add(line);
 
         // generate a "unit box"
-        lesson3.cubes[0] = make_a_box();
-        lesson3.cube_positions[0] = .5;
-        lesson3.cube_angles[0] = 0;
-        lesson3.cube_speeds[0] = .005;
-        lesson3.cubes[0].position.x =  Math.cos( lesson3.cube_positions[0] );
-        lesson3.cubes[0].position.z =  Math.sin( lesson3.cube_positions[0] );
-        lesson3.cubes[0].position.y = .5;
-        this.scene.add(lesson3.cubes[0]);
+        page.cubes[0] = make_a_box();
+        page.cube_positions[0] = .5;
+        page.cube_angles[0] = 0;
+        page.cube_speeds[0] = .005;
+        page.cubes[0].position.x =  Math.cos( page.cube_positions[0] );
+        page.cubes[0].position.z =  Math.sin( page.cube_positions[0] );
+        page.cubes[0].position.y = .5;
+        this.scene.add(page.cubes[0]);
 
-        for( var i = 1; i < lesson3.CUBE_COUNT; i++) {
-            lesson3.cubes[i] = make_a_box();
-            lesson3.cube_positions[i] = Math.random() * (lesson3.GRID_SIZE - .5 - .5) + .5;
-            //lesson3.cube_positions[i] = Math.random() * (5 - .5 - .5) + .5;
-            //lesson3.cube_angles[i] = lesson3.cubes[i].rotation.y = Math.PI / 4;
-            //lesson3.cubes[i].rotation.y = Math.PI;
-            lesson3.cube_angles[i] = 0;
-            //lesson3.cube_speeds[i] = (Math.random() * ( .1 - .05 ) + .05) / ( 2 + lesson3.cube_positions[i]);
-            //lesson3.cube_speeds[i] = lesson3.cube_positions[i] * Math.PI / (240 * 10);
-            lesson3.cube_speeds[i] = Math.random() * (.02 - .005) + .008;
-            lesson3.cubes[i].position.x =  Math.cos( lesson3.cube_positions[i] );
-            lesson3.cubes[i].position.z =  Math.sin( lesson3.cube_positions[i] );
-            lesson3.cubes[i].position.y = Math.random() * (.6 - .5) + .5; // randomize height in small interval to prevent z-fighting
-            this.scene.add(lesson3.cubes[i]);
+        for( var i = 1; i < page.CUBE_COUNT; i++) {
+            page.cubes[i] = make_a_box();
+            page.cube_positions[i] = Math.random() * (page.GRID_SIZE - .5 - .5) + .5;
+            //page.cube_positions[i] = Math.random() * (5 - .5 - .5) + .5;
+            //page.cube_angles[i] = page.cubes[i].rotation.y = Math.PI / 4;
+            //page.cubes[i].rotation.y = Math.PI;
+            page.cube_angles[i] = 0;
+            //page.cube_speeds[i] = (Math.random() * ( .1 - .05 ) + .05) / ( 2 + page.cube_positions[i]);
+            //page.cube_speeds[i] = page.cube_positions[i] * Math.PI / (240 * 10);
+            page.cube_speeds[i] = Math.random() * (.02 - .005) + .008;
+            page.cubes[i].position.x =  Math.cos( page.cube_positions[i] );
+            page.cubes[i].position.z =  Math.sin( page.cube_positions[i] );
+            page.cubes[i].position.y = Math.random() * (.6 - .5) + .5; // randomize height in small interval to prevent z-fighting
+            this.scene.add(page.cubes[i]);
         }
 
 
@@ -190,9 +178,9 @@ var lesson3 = {
             side: THREE.DoubleSide,
             transparent: true
         } );
-        lesson3.cube = new THREE.Mesh( box1, material );
-        lesson3.cube.position.y = .5;
-        this.scene.add( lesson3.cube );
+        page.cube = new THREE.Mesh( box1, material );
+        page.cube.position.y = .5;
+        this.scene.add( page.cube );
 
 */
         // add simple ground
@@ -224,7 +212,7 @@ var lesson3 = {
         // add helpers:
 
         // 1. GridHelper
-        var gridHelper = new THREE.GridHelper(lesson3.GRID_SIZE, 1); // first number is grid size, second is grid step
+        var gridHelper = new THREE.GridHelper(page.GRID_SIZE, 1); // first number is grid size, second is grid step
         gridHelper.position = new THREE.Vector3(0, 0, 0);
         gridHelper.rotation = new THREE.Euler(0, 0, 0);
         gridHelper.setColors( 0x0000ff, 0x8d8d8d);
@@ -276,7 +264,7 @@ function animate() {
     requestAnimationFrame(animate);
 
     // move the cubez, dammit!
-    for( var i = 0; i < lesson3.CUBE_COUNT; i++) {
+    for( var i = 0; i < page.CUBE_COUNT; i++) {
         do_transforms(i);
     }
 
@@ -287,32 +275,32 @@ function animate() {
 
 // Update controls and stats
 function update() {
-    lesson3.controls.update(lesson3.clock.getDelta());
-    lesson3.stats.update();
+    page.controls.update(page.clock.getDelta());
+    page.stats.update();
 }
 
 // Render the scene
 function render() {
-    if (lesson3.renderer) {
-        lesson3.renderer.render(lesson3.scene, lesson3.camera);
+    if (page.renderer) {
+        page.renderer.render(page.scene, page.camera);
     }
 }
 
 // Initialize lesson on page load
 function initializeLesson() {
-    lesson3.init();
+    page.init();
     animate();
 }
 
 function do_transforms(i) {
-    lesson3.cube_angles[i] += lesson3.cube_speeds[i];
-    lesson3.cubes[i].position.x = 0 + ( lesson3.cube_positions[i] * (Math.cos( lesson3.cube_angles[i] )) ); // change 0 to change center of rotation
-    lesson3.cubes[i].position.z = 0 + ( lesson3.cube_positions[i] * Math.sin( lesson3.cube_angles[i] ));
-    rotateAroundObjectAxis(lesson3.cubes[i], x_axis, Math.PI * lesson3.cube_speeds[i] + Math.sin( lesson3.cube_speeds[i] ), euler_direction);
-    rotateAroundWorldAxis(lesson3.cubes[i], y_axis, -lesson3.cube_speeds[i], euler_direction);
+    page.cube_angles[i] += page.cube_speeds[i];
+    page.cubes[i].position.x = 0 + ( page.cube_positions[i] * (Math.cos( page.cube_angles[i] )) ); // change 0 to change center of rotation
+    page.cubes[i].position.z = 0 + ( page.cube_positions[i] * Math.sin( page.cube_angles[i] ));
+    rotateAroundObjectAxis(page.cubes[i], x_axis, Math.PI * page.cube_speeds[i] + Math.sin( page.cube_speeds[i] ), euler_direction);
+    rotateAroundWorldAxis(page.cubes[i], y_axis, -page.cube_speeds[i], euler_direction);
 
     // bounce factor
-    lesson3.cubes[i].position.y = .5 + Math.abs( Math.sin( (2 * lesson3.cubes[i].rotation.x + 0 ) ) / 5 );
+    page.cubes[i].position.y = .5 + Math.abs( Math.sin( (2 * page.cubes[i].rotation.x + 0 ) ) / 5 );
 }
 
 function make_a_box() {
