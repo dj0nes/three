@@ -1,53 +1,106 @@
-// set the scene size
-    var WIDTH = 400,
-        HEIGHT = 300;
+var container, stats;
 
-    // set some camera attributes
-    var VIEW_ANGLE = 45,
-        ASPECT = WIDTH / HEIGHT,
-        NEAR = 1,
-        FAR = 1000;
+            var camera, scene, renderer;
 
-    // get the DOM element to attach to
-    // - assume we've got jQuery to hand
-    var $container = $('#container');
+            init();
+            animate();
 
-    // create a WebGL renderer, camera
-    // and a scene
-    var renderer = new THREE.WebGLRenderer();
-    var camera = new THREE.PerspectiveCamera(
-        VIEW_ANGLE,
-    ASPECT,
-    NEAR,
-    FAR  );
-    var scene = new THREE.Scene();
+            function init() {
 
-    // the camera starts at 0,0,0 so pull it back
-    camera.position.z = 300;
+                container = document.getElementById( 'container' );
 
-    // start the renderer
-    renderer.setSize(WIDTH, HEIGHT);
+                camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 10 );
+                camera.position.z = 2;
 
-    // attach the render-supplied DOM element
-    $container.append(renderer.domElement);
+                scene = new THREE.Scene();
 
-    // create the sphere's material
-    var shaderMaterial = new THREE.ShaderMaterial({
-        vertexShader:   $('#vertexshader').text(),
-        fragmentShader: $('#fragmentshader').text()
-    });
+                // geometry
 
-    // set up the sphere vars
-    var radius = 50, segments = 16, rings = 16;
+                var triangles = 500;
 
-    // create a new mesh with sphere geometry -
-    // we will cover the sphereMaterial next!
-    var sphere = new THREE.Mesh(
-       new THREE.SphereGeometry(radius, segments, rings),
-       shaderMaterial);
+                var geometry = new THREE.BufferGeometry();
 
-    // add the sphere and camera to the scene
-    scene.add(sphere);
-    scene.add(camera);
+                var vertices = new THREE.BufferAttribute( new Float32Array( triangles * 3 * 3 ), 3 );
 
-    renderer.render(scene, camera);
+                for ( var i = 0; i < vertices.length; i ++ ) {
+
+                    vertices.setXYZ( i, Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5 );
+
+                }
+
+                geometry.addAttribute( 'position', vertices );
+
+                var colors = new THREE.BufferAttribute(new Float32Array( triangles * 3 * 4 ), 4 );
+
+                for ( var i = 0; i < colors.length; i ++ ) {
+
+                    colors.setXYZW( i, Math.random(), Math.random(), Math.random(), Math.random() );
+
+                }
+
+                geometry.addAttribute( 'color', colors );
+
+                // material
+
+                var material = new THREE.RawShaderMaterial( {
+
+                    uniforms: {
+                        time: { type: "f", value: 1.0 }
+                    },
+                    vertexShader: document.getElementById( 'vertexShader' ).textContent,
+                    fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
+                    side: THREE.DoubleSide,
+                    transparent: true
+
+                } );
+
+                var mesh = new THREE.Mesh( geometry, material );
+                scene.add( mesh );
+
+                renderer = new THREE.WebGLRenderer();
+                renderer.setClearColor( 0x101010 );
+                renderer.setPixelRatio( window.devicePixelRatio );
+                renderer.setSize( window.innerWidth, window.innerHeight );
+                container.appendChild( renderer.domElement );
+
+                stats = new Stats();
+                stats.domElement.style.position = 'absolute';
+                stats.domElement.style.top = '0px';
+                container.appendChild( stats.domElement );
+
+                window.addEventListener( 'resize', onWindowResize, false );
+
+            }
+
+            function onWindowResize( event ) {
+
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+
+                renderer.setSize( window.innerWidth, window.innerHeight );
+
+            }
+
+            //
+
+            function animate() {
+
+                requestAnimationFrame( animate );
+
+                render();
+                stats.update();
+
+            }
+
+            function render() {
+
+                var time = performance.now();
+
+                var object = scene.children[ 0 ];
+
+                object.rotation.y = time * 0.0005;
+                object.material.uniforms.time.value = time * 0.005;
+
+                renderer.render( scene, camera );
+
+            }
