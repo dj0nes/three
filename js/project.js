@@ -1,29 +1,53 @@
-window.onload = function() {
-    var renderer = new THREE.WebGLRenderer();
-    renderer.setSize( 800, 600 );
-    document.body.appendChild( renderer.domElement );
+// set the scene size
+    var WIDTH = 400,
+        HEIGHT = 300;
 
+    // set some camera attributes
+    var VIEW_ANGLE = 45,
+        ASPECT = WIDTH / HEIGHT,
+        NEAR = 1,
+        FAR = 1000;
+
+    // get the DOM element to attach to
+    // - assume we've got jQuery to hand
+    var $container = $('#container');
+
+    // create a WebGL renderer, camera
+    // and a scene
+    var renderer = new THREE.WebGLRenderer();
+    var camera = new THREE.PerspectiveCamera(
+        VIEW_ANGLE,
+    ASPECT,
+    NEAR,
+    FAR  );
     var scene = new THREE.Scene();
 
-    var camera = new THREE.PerspectiveCamera(
-        35,             // Field of view
-        800 / 600,      // Aspect ratio
-        0.1,            // Near plane
-        10000           // Far plane
-    );
-    camera.position.set( -15, 10, 10 );
-    camera.lookAt( scene.position );
+    // the camera starts at 0,0,0 so pull it back
+    camera.position.z = 300;
 
-    var geometry = new THREE.BoxGeometry( 5, 5, 5 );
-    var material = new THREE.MeshLambertMaterial( { color: 0xFF0000 } );
-    var mesh = new THREE.Mesh( geometry, material );
-    scene.add( mesh );
+    // start the renderer
+    renderer.setSize(WIDTH, HEIGHT);
 
-    var light = new THREE.PointLight( 0xFFFF00 );
-    light.position.set( 10, 0, 10 );
-    scene.add( light );
+    // attach the render-supplied DOM element
+    $container.append(renderer.domElement);
 
-    renderer.setClearColor( 0xdddddd, 1);
-    renderer.render( scene, camera );
+    // create the sphere's material
+    var shaderMaterial = new THREE.ShaderMaterial({
+        vertexShader:   $('#vertexshader').text(),
+        fragmentShader: $('#fragmentshader').text()
+    });
 
-};
+    // set up the sphere vars
+    var radius = 50, segments = 16, rings = 16;
+
+    // create a new mesh with sphere geometry -
+    // we will cover the sphereMaterial next!
+    var sphere = new THREE.Mesh(
+       new THREE.SphereGeometry(radius, segments, rings),
+       shaderMaterial);
+
+    // add the sphere and camera to the scene
+    scene.add(sphere);
+    scene.add(camera);
+
+    renderer.render(scene, camera);
