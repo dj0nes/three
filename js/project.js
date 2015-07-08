@@ -15,16 +15,22 @@ function init() {
     var triangles             = 1;
     var geometry = new THREE.BufferGeometry();
     var vertices = new THREE.BufferAttribute( new Float32Array( triangles * 3 * 3 ), 3 );
+    // Just while I figure out what the heck is going on with the shader stuff
+    var vals = [ 0.0, 0.0, 0.0, 0.5, 0.5, 0.0, .5, -0.5, 0.0 ];
 
-    for ( var i = 0; i < vertices.length; i ++ ) {
-        vertices.setXYZ( i, Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5 );
+    for ( var i = 0; i < vertices.length/vertices.itemSize; i ++ ) {
+            // Just while I figure out what the heck is going on with the shader stuff
+        // vertices.setXYZ( i, Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5 );
+        vertices.setXYZ( i, vals[i * vertices.itemSize], vals[i * vertices.itemSize + 1], vals[i * vertices.itemSize + 2] );
     }
 
     geometry.addAttribute( 'position', vertices );
     var colors = new THREE.BufferAttribute(new Float32Array( triangles * 3 * 4 ), 4 );
+    // var THE_COLOR = [Math.random(), Math.random(), Math.random(), Math.random()]
+    var THE_COLOR = [1,0,0, 1] // full-on red
 
     for ( var i = 0; i < colors.length; i ++ ) {
-        colors.setXYZW( i, Math.random(), Math.random(), Math.random(), Math.random() );
+        colors.setXYZW( i, THE_COLOR[0], THE_COLOR[1], THE_COLOR[2], THE_COLOR[3] );
     }
 
     geometry.addAttribute( 'color', colors );
@@ -73,6 +79,6 @@ function render() {
     var time = performance.now();
     var object = scene.children[ 0 ];
     object.rotation.y = time * 0.0005;
-    object.material.uniforms.time.value = time * 0.005;
+    object.material.uniforms.time.value = time * 0.0005;
     renderer.render( scene, camera );
 }
