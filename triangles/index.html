@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Shader</title>
+    <link href="css/grid.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div id="container"></div>
+
+    <script src="js/three.js"></script>        
+    <script src="./js/jquery-2.1.4.min.js"></script>
+    <script src="./js/dat.gui.min.js"></script>
+    <script src="js/THREEx.WindowResize.js"></script>
+    <script src="js/OrbitControls.js"></script>
+    <script src="js/helvetiker_regular.typeface.js"></script>
+    <script src="js/Stats.js"></script>
+
+    <script id="vertexShader" type="x-shader/x-vertex">
+
+        precision mediump float;
+        precision mediump int;
+
+        uniform float amplitude;
+        uniform vec3 camera;
+
+        varying vec3 transformedNormal;
+
+        attribute vec3 faceNormal;
+
+        void main() {
+            float vecdot = max( 0.0, dot(normal, camera * -1.0));
+            float normal_add = 0.5;
+            // transformedNormal = normalMatrix * vec3(normal.xyz + normal_add);
+            vec3 abscam = vec3(abs(camera.x), abs(camera.y), abs(camera.z));
+            transformedNormal = faceNormal;
+
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+        }
+
+    </script>
+
+    <script id="fragmentShader" type="x-shader/x-fragment">
+
+        precision mediump float;
+        precision mediump int;
+
+        uniform float amplitude;
+        uniform vec3 camera;
+
+        varying vec3 transformedNormal;
+
+        void main(void)
+        {
+            // float scale = 2.0;
+            // vec4 color = vec4(transformedNormal, 1.0);
+            // vec4 comp = vec4(.1, .1, .1, 1);
+            // gl_FragColor = max(color, comp);
+            gl_FragColor = vec4(abs(transformedNormal.x), transformedNormal.y, transformedNormal.z, 1);
+        }
+
+    </script>
+
+    <script src="js/project.js"></script>
+</body>
+</html>
