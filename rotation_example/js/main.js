@@ -32,7 +32,7 @@ var _matrix = new THREE.Matrix4();
             _container.appendChild( _renderer.domElement );
 
             ///////// INITIAL SETUP CODE ///////////    
-            var geo = new THREE.BoxGeometry(5,5,20,32);
+/*            var geo = new THREE.BoxGeometry(5,5,20,32);
             geo.applyMatrix( new THREE.Matrix4().makeRotationY( Math.PI/2 ) );
             geo.applyMatrix( new THREE.Matrix4().makeTranslation(0,-6,0) );
             _mesh = new THREE.Mesh(geo, new THREE.MeshNormalMaterial());
@@ -45,7 +45,20 @@ var _matrix = new THREE.Matrix4();
                 new THREE.SphereGeometry(1,20,20),
                 new THREE.MeshNormalMaterial());
             sphere.position.set(_mesh.position.x,_mesh.position.y,_mesh.position.z);
-            _scene.add(sphere);
+            _scene.add(sphere);*/
+
+            var geo = new THREE.BoxGeometry(5,5,20,32);
+            _mesh = new THREE.Mesh(geo, new THREE.MeshNormalMaterial());
+            _mesh.rotation.y = -Math.PI/2;
+            _mesh.position.set(0,-6,0);    // _mesh will be the child
+
+            _sphere = new THREE.Mesh(      // _sphere will be the parent
+                new THREE.SphereGeometry(1,20,20),
+                new THREE.MeshNormalMaterial());
+            _sphere.position.set(0,-12,0);
+            _sphere.rotation.x -= Math.PI/8;
+            _sphere.add(_mesh);      // add child to parent
+            _scene.add(_sphere);
             
             // put axes at mesh origin with mesh rotation
             _scene.add(drawAxes(10, _mesh.position, _mesh.rotation));
@@ -66,7 +79,8 @@ var _matrix = new THREE.Matrix4();
             _renderer.render( _scene, _camera );
             if (rotateBool) {
                 ///////// RENDER CODE ///////////
-                _mesh.rotation.z = -_tick * Math.PI/128;    
+                // _mesh.rotation.z = -_tick * Math.PI/128; 
+                _sphere.rotation.z = -_tick * Math.PI/128;    
                 ///////// END OF RENDER CODE ///////////
             }
             _tick++;
