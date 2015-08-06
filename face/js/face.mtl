@@ -1,0 +1,51 @@
+# Blender MTL File: 'dj-deck-bisected-working-artsy-maybebad_lp.blend'
+# Material Count: 5
+
+newmtl Texture_0
+Ns 0.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd /Users/dj/Documents/Face/4248044_20150731183112/mesh/tex_0.jpg
+
+newmtl Texture_0_tex_0.jpg
+Ns 0.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd /Users/dj/Documents/Face/4248044_20150731183112/mesh/tex_0.jpg
+
+newmtl Texture_1
+Ns 0.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd /Users/dj/Documents/Face/4248044_20150731183112/mesh/tex_1.jpg
+
+newmtl Texture_2
+Ns 0.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd /Users/dj/Documents/Face/4248044_20150731183112/mesh/tex_2.jpg
+
+newmtl Untextured
+Ns 0.000000
+Ka 0.000000 0.000000 0.000000
+Kd 0.401569 0.401569 0.401569
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
