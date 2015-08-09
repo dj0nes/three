@@ -99,12 +99,6 @@ function init(){
 
         //     if ( child instanceof THREE.Mesh ) {
 
-        //         child.material.map = texture;
-
-        //     }
-
-        // } );
-        object.children[0].material = new THREE.MeshNormalMaterial();
 
     if (typeof object == "undefined" ) {
         debugger;
@@ -113,6 +107,52 @@ function init(){
         //object.position.y = - 80;
         scene.add( object );
 
+        //         child.material.map = texture;
+
+        //     }
+
+        // } );
+        //object.children[0].material = new THREE.MeshNormalMaterial();
+
+        object.children[0].material = new THREE.ShaderMaterial( {
+
+            uniforms: {
+                "opacity" : { type: "f", value: 1.0 }
+            },
+            attributes: {
+                
+            },
+            vertexShader: [
+                "varying vec3 vNormal;",
+                THREE.ShaderChunk[ "common" ],
+                THREE.ShaderChunk[ "morphtarget_pars_vertex" ],
+                THREE.ShaderChunk[ "logdepthbuf_pars_vertex" ],
+
+                "void main() {",
+                "   vNormal = normalize( normalMatrix * normal );",
+                    THREE.ShaderChunk[ "morphtarget_vertex" ],
+                    THREE.ShaderChunk[ "default_vertex" ],
+                    THREE.ShaderChunk[ "logdepthbuf_vertex" ],
+                "}"
+            ].join("\n"),
+            fragmentShader: [
+                "uniform float opacity;",
+                "varying vec3 vNormal;",
+                THREE.ShaderChunk[ "common" ],
+                THREE.ShaderChunk[ "logdepthbuf_pars_fragment" ],
+
+                "void main() {",
+                "   gl_FragColor = vec4( 1.5 * normalize( vNormal ) + 0.25, opacity );",
+                "   gl_FragColor.r = gl_FragColor.r * 0.95;",
+                "   gl_FragColor.g = gl_FragColor.g * 0.85;",
+                "   gl_FragColor.b = gl_FragColor.b * 0.95;",
+                    THREE.ShaderChunk[ "logdepthbuf_fragment" ],
+
+                "}"
+
+            ].join("\n")
+
+        } );
     }, onProgress, onError );
 
         //
