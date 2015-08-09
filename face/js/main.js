@@ -11,6 +11,11 @@ var NUM_CUBES = 1;
 var TRIANGLE_SIZE = 1;
 var ROWS = 1;
 var COLS = 1;
+var model;
+
+var ops = {
+
+}
 
 var THE_SPHERE;
 
@@ -51,7 +56,7 @@ function init(){
     stats.domElement.style.bottom = '0px';
     document.body.appendChild( stats.domElement );
     
-    setupControls(uniforms);
+    
     
     window.addEventListener('resize', onWindowResize, false);
 
@@ -90,117 +95,72 @@ function init(){
     var onError = function ( xhr ) {
         console.error("effed up");
     };
-    // model
 
+    // model
     var loader = new THREE.OBJLoader( manager );
     loader.load( './js/face.obj', function ( object ) {
 
-        // object.traverse( function ( child ) {
+        ops.model = object;
+        scene.add( ops.model );
 
-        //     if ( child instanceof THREE.Mesh ) {
+        ops.uniforms = {
+            "opacity" : { type: "f", value: 1.0, range: [0,1] },
+            "amplitude" : { type: "f", value: 1.0, range: [0,5] },
+            "offset" : { type: "f", value: 0.0, range: [-2,2] },
+            "red_channel" : { type: "f", value: 1.0, range: [-1,2] },
+            "green_channel" : { type: "f", value: 1.0, range: [-1,2] },
+            "blue_channel" : { type: "f", value: 1.0, range: [-1,2] },
+        };
 
+        ops.attributes = {};
 
-    if (typeof object == "undefined" ) {
-        debugger;
-    }
+        ops.vertexShader = [
+            "varying vec3 vNormal;",
+            THREE.ShaderChunk[ "common" ],
+            THREE.ShaderChunk[ "morphtarget_pars_vertex" ],
+            THREE.ShaderChunk[ "logdepthbuf_pars_vertex" ],
 
-        //object.position.y = - 80;
-        scene.add( object );
+            "void main() {",
+            "   vNormal = normalize( normalMatrix * normal );",
+                THREE.ShaderChunk[ "morphtarget_vertex" ],
+                THREE.ShaderChunk[ "default_vertex" ],
+                THREE.ShaderChunk[ "logdepthbuf_vertex" ],
+            "}"
+        ].join("\n");
 
-        //         child.material.map = texture;
+        ops.fragmentShader = [
+            "uniform float opacity;",
+            "uniform float amplitude;",
+            "uniform float offset;",
+            "uniform float red_channel;",
+            "uniform float green_channel;",
+            "uniform float blue_channel;",
+            "varying vec3 vNormal;",
+            THREE.ShaderChunk[ "common" ],
+            THREE.ShaderChunk[ "logdepthbuf_pars_fragment" ],
 
-        //     }
+            "void main() {",
+            "   gl_FragColor = vec4( amplitude * normalize( vNormal ) + offset, opacity);",
+            "   gl_FragColor.r = gl_FragColor.r * red_channel;",
+            "   gl_FragColor.g = gl_FragColor.g * green_channel;",
+            "   gl_FragColor.b = gl_FragColor.b * blue_channel;",
+                THREE.ShaderChunk[ "logdepthbuf_fragment" ],
 
-        // } );
-        //object.children[0].material = new THREE.MeshNormalMaterial();
+            "}"
 
-        object.children[0].material = new THREE.ShaderMaterial( {
+        ].join("\n");
 
-            uniforms: {
-                "opacity" : { type: "f", value: 1.0 }
-            },
-            attributes: {
-                
-            },
-            vertexShader: [
-                "varying vec3 vNormal;",
-                THREE.ShaderChunk[ "common" ],
-                THREE.ShaderChunk[ "morphtarget_pars_vertex" ],
-                THREE.ShaderChunk[ "logdepthbuf_pars_vertex" ],
+        ops.model.children[0].material = new THREE.ShaderMaterial({
+            transparent: true,
+            uniforms: ops.uniforms,
+            attributes: ops.attributes,
+            vertexShader: ops.vertexShader,
+            fragmentShader: ops.fragmentShader
+        });
 
-                "void main() {",
-                "   vNormal = normalize( normalMatrix * normal );",
-                    THREE.ShaderChunk[ "morphtarget_vertex" ],
-                    THREE.ShaderChunk[ "default_vertex" ],
-                    THREE.ShaderChunk[ "logdepthbuf_vertex" ],
-                "}"
-            ].join("\n"),
-            fragmentShader: [
-                "uniform float opacity;",
-                "varying vec3 vNormal;",
-                THREE.ShaderChunk[ "common" ],
-                THREE.ShaderChunk[ "logdepthbuf_pars_fragment" ],
+        setupControls(ops.uniforms);
 
-                "void main() {",
-                "   gl_FragColor = vec4( 1.5 * normalize( vNormal ) + 0.25, opacity );",
-                "   gl_FragColor.r = gl_FragColor.r * 0.95;",
-                "   gl_FragColor.g = gl_FragColor.g * 0.85;",
-                "   gl_FragColor.b = gl_FragColor.b * 0.95;",
-                    THREE.ShaderChunk[ "logdepthbuf_fragment" ],
-
-                "}"
-
-            ].join("\n")
-
-        } );
     }, onProgress, onError );
-
-        //
-
-
-
-    // var geometry = new THREE.BoxGeometry( ROWS, COLS, 1 );
-    // var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-    // var parent_cube = new THREE.Mesh( geometry, material );
-    // scene.add( parent_cube );
-
-    // parent_cube.position.x = ROWS/2;
-    // parent_cube.position.x = COLS/2;
-
-    // parent_cube.position.y = 1/2;
-
-
-
-
-    // var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-    // var material = new THREE.MeshNormalMaterial();
-
-    
-
-    // for( var i = 0; i < ROWS; i++) {
-    //     for(var j = 0; j < COLS; j++) {
-
-    //         var cube = new THREE.Mesh( geometry, material );
-            
-    //         // cube.position.x = j + cube.scale.x/2;
-    //         // cube.position.z = -i - cube.scale.z/2;
-    //         // cube.position.y = - cube.scale.y/2;
-    //         // cube.scale.y = 1;
-    //         cube.timescale = Math.random();
-
-    //         cubes.push(cube);
-    //         parent_cube.add(cube);
-
-    //     }
-
-        
-    // }
-    
-    // var geometry = new THREE.SphereGeometry( .1, 32, 32 );
-    // var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-    // THE_SPHERE = new THREE.Mesh( geometry, material );
-    // THE_SPHERE.position.set(0, 2, 0);
-    // scene.add( THE_SPHERE );
 
     
 }
@@ -217,13 +177,6 @@ function animate() {
 
     framestep = .01;
     frame += framestep;
-
-    // THE_SPHERE.position.set(0, 2, Math.sin(frame/10));
-
-    // for(var i = 0; i < cubes.length; i++) {
-    //     cubes[i].position.y = Math.cos( frame * Math.PI/4);
-    //     // cubes[i].timescale
-    // }
     
     renderer.render(scene, camera);
     controls.update(clock.getDelta());
@@ -249,42 +202,78 @@ function changeGeometry(type) {
 
 function setupControls(ob) {
     var gui = new dat.GUI();
-    var sceneFolder = gui.addFolder('Scene');
-    var geoController = sceneFolder.add({Geometry:"box"}, 'Geometry', [ 'box', 'sphere', 'torusknot' ] );
-    geoController.onChange(changeGeometry);
-    var uniformsFolder = gui.addFolder('Uniforms');
-    for(key in ob){
-      if(ob[key].type == 'f'){
-        var controller = uniformsFolder.add(ob[key], 'value').name(key);
-        if(typeof ob[key].min != 'undefined'){
-          controller.min(ob[key].min).name(key);
-      }
-      if(typeof ob[key].max != 'undefined'){
-          controller.max(ob[key].max).name(key);
-      }
-      controller.onChange(function(value){
-          this.object.value = parseFloat(value);
-      });
-  }else if(ob[key].type == 'c'){
-    ob[key].guivalue = [ob[key].value.r * 255, ob[key].value.g * 255, ob[key].value.b * 255];
-    var controller = uniformsFolder.addColor(ob[key], 'guivalue').name(key);
-    controller.onChange(function(value){
-      this.object.value.setRGB(value[0]/255, value[1]/255, value[2]/255);
-  });
-}
-}
-uniformsFolder.open();
-var sourceFolder = gui.addFolder('Source');
-var butob = {
-    'view vertex shader code': function(){
-      TINY.box.show({html:'<div style="width: 500px; height: 500px;"><h3 style="margin: 0px; padding-bottom: 5px;">Vertex Shader</h3><pre style="overflow: scroll; height: 470px;">'+document.getElementById('vertexShader').text+'</pre></div>',animate:false,close:false,top:5})
-  },
-  'view fragment shader code': function(){
-   TINY.box.show({html:'<div style="width: 500px; height: 500px;"><h3 style="margin: 0px; padding-bottom: 5px;">Fragment Shader</h3><pre style="overflow: scroll; height: 470px;">'+document.getElementById('fragmentShader').text+'</pre></div>',animate:false,close:false,top:5})
-}
-};
-sourceFolder.add(butob, 'view vertex shader code');
-sourceFolder.add(butob, 'view fragment shader code');
+    for (key in ops.uniforms) {
+        gui.add(ops.uniforms[key], "value", ops.uniforms[key].range[0], ops.uniforms[key].range[1]).name(key);
+    }
+
+    var butob = {
+        'Vertex Shader code': function(){
+            picoModal({
+                content: '<h3 style="margin: 5px; padding: 0px 0px 10px; font-family: sans-serif;">Vertex Shader</h3>' +
+                '<pre style="overflow: scroll; height: 470px; margin: 5px;">'+ops.vertexShader+'</pre>',
+                closeButton: true,
+                width: "75%",
+            }).show();
+        },
+        'Fragment Shader code': function(){
+
+            picoModal({
+                content: '<h3 style="margin: 5px; padding: 0px 0px 10px; font-family: sans-serif;">Vertex Shader</h3>' +
+                '<pre style="overflow: scroll; height: 470px; margin: 5px;">'+ops.fragmentShader+'</pre>',
+                closeButton: true,
+                width: "75%"
+            }).show();
+        }
+    };
+    gui.add(butob, 'Vertex Shader code');
+    gui.add(butob, 'Fragment Shader code');
+
+
+    //gui.add(ops.uniforms.opacity, "value", 0, 1).name("Opacity");
+
+    // var sceneFolder = gui.addFolder('Scene');
+    // var geoController = sceneFolder.add({Geometry:"box"}, 'Geometry', [ 'box', 'sphere', 'torusknot' ] );
+    // geoController.onChange(changeGeometry);
+    // var uniformsFolder = gui.addFolder('Uniforms');
+
+    // gui.add(sceneFolder, "opacity", 0, 1);
+
+    // for(key in ob) {
+    //     if(ob[key].type == 'f'){
+    //         var controller = uniformsFolder.add(ob[key], 'value').name(key);
+    //         if(typeof ob[key].min != 'undefined'){
+    //             controller.min(ob[key].min).name(key);
+    //         }
+    //         if(typeof ob[key].max != 'undefined'){
+    //             controller.max(ob[key].max).name(key);
+    //         }
+    //         controller.onChange(function(value){
+    //             this.object.value = parseFloat(value);
+    //             ops.uniforms.opacity = value;
+    //         });
+    //     }else if(ob[key].type == 'c'){
+    //         ob[key].guivalue = [ob[key].value.r * 255, ob[key].value.g * 255, ob[key].value.b * 255];
+    //         var controller = uniformsFolder.addColor(ob[key], 'guivalue').name(key);
+    //         controller.onChange(function(value){
+    //             this.object.value.setRGB(value[0]/255, value[1]/255, value[2]/255);
+    //         });
+    //     }
+    // }
+
+    // var attributesFolder = gui.addFolder('Attributes');
+
+    // uniformsFolder.open();
+    // var sourceFolder = gui.addFolder('Source');
+    // var butob = {
+    //     'view vertex shader code': function(){
+    //         TINY.box.show({html:'<div style="width: 500px; height: 500px;"><h3 style="margin: 0px; padding-bottom: 5px;">Vertex Shader</h3><pre style="overflow: scroll; height: 470px;">'+document.getElementById('vertexShader').text+'</pre></div>',animate:false,close:false,top:5})
+    //     },
+    //     'view fragment shader code': function(){
+    //         TINY.box.show({html:'<div style="width: 500px; height: 500px;"><h3 style="margin: 0px; padding-bottom: 5px;">Fragment Shader</h3><pre style="overflow: scroll; height: 470px;">'+document.getElementById('fragmentShader').text+'</pre></div>',animate:false,close:false,top:5})
+    //     }
+    // };
+    // sourceFolder.add(butob, 'view vertex shader code');
+    // sourceFolder.add(butob, 'view fragment shader code');
 
 }
 
