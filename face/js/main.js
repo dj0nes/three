@@ -31,7 +31,7 @@ animate();
 
 
 function init(){
-    renderer = new THREE.WebGLRenderer();
+    renderer = new THREE.WebGLRenderer( { antialias: true });
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
@@ -230,6 +230,17 @@ function setupControls(ob) {
     };
     gui.add(butob, 'Vertex Shader code');
     gui.add(butob, 'Fragment Shader code');
+
+    var w = window,
+        d = document,
+        e = d.documentElement,
+        g = d.getElementsByTagName('body')[0],
+        x = w.innerWidth || e.clientWidth || g.clientWidth,
+        y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+
+    if( x < 700 || y < 700 ) {
+        gui.close();
+    }
 
 
     //gui.add(ops.uniforms.opacity, "value", 0, 1).name("Opacity");
