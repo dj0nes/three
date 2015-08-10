@@ -160,6 +160,7 @@ function init(){
         });
 
         setupControls(ops.uniforms);
+        THREE.Clock(true);
 
     }, onProgress, onError );
 
@@ -174,7 +175,8 @@ function onWindowResize() {
 
 function animate() {
     requestAnimationFrame(animate);
-    var time = performance.now();
+    // var time = THREE.Clock.getDelta();
+    // console.log(time);
 
     framestep = .01;
     frame += framestep;
