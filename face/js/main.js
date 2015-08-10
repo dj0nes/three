@@ -152,6 +152,7 @@ function init(){
 
         ops.model.children[0].material = new THREE.ShaderMaterial({
             transparent: true,
+            side: THREE.DoubleSide,
             uniforms: ops.uniforms,
             attributes: ops.attributes,
             vertexShader: ops.vertexShader,
