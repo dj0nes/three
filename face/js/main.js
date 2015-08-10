@@ -105,8 +105,8 @@ function init(){
 
         ops.uniforms = {
             "opacity" : { type: "f", value: 1.0, range: [0,1] },
-            "amplitude" : { type: "f", value: 1.0, range: [0,5] },
-            "offset" : { type: "f", value: 0.0, range: [-2,2] },
+            "amplitude" : { type: "f", value: 1.0, range: [-1,5] },
+            "offset" : { type: "f", value: 0.0, range: [-2.0,2.0] },
             "red_channel" : { type: "f", value: 1.0, range: [-1,2] },
             "green_channel" : { type: "f", value: 1.0, range: [-1,2] },
             "blue_channel" : { type: "f", value: 1.0, range: [-1,2] },
