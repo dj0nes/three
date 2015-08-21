@@ -110,12 +110,16 @@ function init(){
             "red_channel" : { type: "f", value: 1.0, range: [-1,2] },
             "green_channel" : { type: "f", value: 1.0, range: [-1,2] },
             "blue_channel" : { type: "f", value: 1.0, range: [-1,2] },
+            "time" : { type: "f", value: 0.0, range: [0,10000] },
         };
 
-        ops.attributes = {};
+        ops.attributes = {
+          // "time" : { type: "f", value: 0.0, range: [0,10000] },
+        };
 
         ops.vertexShader = [
             "varying vec3 vNormal;",
+            "varying vec4 Position;",
             THREE.ShaderChunk[ "common" ],
             THREE.ShaderChunk[ "morphtarget_pars_vertex" ],
             THREE.ShaderChunk[ "logdepthbuf_pars_vertex" ],
@@ -125,6 +129,8 @@ function init(){
                 THREE.ShaderChunk[ "morphtarget_vertex" ],
                 THREE.ShaderChunk[ "default_vertex" ],
                 THREE.ShaderChunk[ "logdepthbuf_vertex" ],
+                "Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+                // "ctime = time;",
             "}"
         ].join("\n");
 
@@ -135,12 +141,24 @@ function init(){
             "uniform float red_channel;",
             "uniform float green_channel;",
             "uniform float blue_channel;",
+            "uniform float time;",
             "varying vec3 vNormal;",
+            "varying vec4 Position;",
             THREE.ShaderChunk[ "common" ],
             THREE.ShaderChunk[ "logdepthbuf_pars_fragment" ],
 
+            "highp float rand(vec2 co)",
+            "{",
+              "highp float a = 12.9898;",
+              "highp float b = 78.233;",
+              "highp float c = 43758.5453;",
+              "highp float dt= dot(co.xy ,vec2(a,b));",
+              "highp float sn= mod(dt,3.14);",
+              "return fract(sin(sn) * c);",
+            "}",
+
             "void main() {",
-            "   gl_FragColor = vec4( amplitude * normalize( vNormal ) + offset, opacity);",
+            "   gl_FragColor = vec4( amplitude * normalize( vNormal ) + offset, vNormal.y + time/2000.0 - 2.5);",
             "   gl_FragColor.r = gl_FragColor.r * red_channel;",
             "   gl_FragColor.g = gl_FragColor.g * green_channel;",
             "   gl_FragColor.b = gl_FragColor.b * blue_channel;",
@@ -152,7 +170,8 @@ function init(){
 
         ops.model.children[0].material = new THREE.ShaderMaterial({
             transparent: true,
-            side: THREE.DoubleSide,
+            // side: THREE.DoubleSide,
+            side: THREE.FrontSide,
             uniforms: ops.uniforms,
             attributes: ops.attributes,
             vertexShader: ops.vertexShader,
@@ -180,6 +199,8 @@ function animate() {
 
     framestep = .01;
     frame += framestep;
+
+    ops.uniforms["time"].value = performance.now();
 
     renderer.render(scene, camera);
     controls.update(clock.getDelta());
