@@ -14,7 +14,7 @@ var COLS = 1;
 var model;
 
 var ops = {
-
+  face_loaded: false
 }
 
 var THE_SPHERE;
@@ -103,6 +103,8 @@ function init(){
         ops.model = object;
         scene.add( ops.model );
 
+        ops.face_loaded = true;
+
         ops.uniforms = {
             "opacity" : { type: "f", value: 1.0, range: [0,1] },
             "amplitude" : { type: "f", value: 1.0, range: [-1,5] },
@@ -114,7 +116,7 @@ function init(){
         };
 
         ops.attributes = {
-          // "time" : { type: "f", value: 0.0, range: [0,10000] },
+          "time" : { type: "f", value: 0.0, range: [0,10000] },
         };
 
         ops.vertexShader = [
@@ -200,7 +202,9 @@ function animate() {
     framestep = .01;
     frame += framestep;
 
-    ops.uniforms["time"].value = performance.now();
+    if (ops.face_loaded) {
+      ops.uniforms["time"].value = clock.oldTime - clock.startTime;
+    }
 
     renderer.render(scene, camera);
     controls.update(clock.getDelta());
