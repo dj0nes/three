@@ -149,6 +149,10 @@ function init(){
             THREE.ShaderChunk[ "common" ],
             THREE.ShaderChunk[ "logdepthbuf_pars_fragment" ],
 
+            "float snoise(in vec2 co){", //https://www.shadertoy.com/view/ltB3zD
+              "return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);",
+            "}",
+
             "highp float rand(vec2 co)",
             "{",
               "highp float a = 12.9898;",
@@ -160,7 +164,8 @@ function init(){
             "}",
 
             "void main() {",
-            "   gl_FragColor = vec4( amplitude * normalize( vNormal ) + offset, vNormal.y + time/2000.0 - 2.5);",
+            "   float opacity_magnitude = sin( snoise( vec2(vNormal.x, time))) ;", // * (time/2000.0 - 2.5)
+            "   gl_FragColor = vec4( amplitude * normalize( vNormal ) + offset, opacity_magnitude);",
             "   gl_FragColor.r = gl_FragColor.r * red_channel;",
             "   gl_FragColor.g = gl_FragColor.g * green_channel;",
             "   gl_FragColor.b = gl_FragColor.b * blue_channel;",
