@@ -35,7 +35,7 @@ function init(){
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
-    
+
     camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, .1, 1000);
     camera.position.x = 2.5;
     camera.position.y = 2;
@@ -46,18 +46,18 @@ function init(){
 
     var light = new THREE.AmbientLight( 0x404040 ); // soft white light
     scene.add( light );
-    
+
     var directionalLight = new THREE.DirectionalLight(0xffffff);
     directionalLight.position.set(1, 1, 1).normalize();
     scene.add(directionalLight);
-    
+
     stats = new Stats();
     stats.domElement.style.position = 'absolute';
     stats.domElement.style.bottom = '0px';
     document.body.appendChild( stats.domElement );
-    
-    
-    
+
+
+
     window.addEventListener('resize', onWindowResize, false);
 
     // 1. GridHelper
@@ -164,7 +164,7 @@ function init(){
 
     }, onProgress, onError );
 
-    
+
 }
 
 function onWindowResize() {
@@ -180,7 +180,7 @@ function animate() {
 
     framestep = .01;
     frame += framestep;
-    
+
     renderer.render(scene, camera);
     controls.update(clock.getDelta());
     labels.map(arrLook);
@@ -221,7 +221,7 @@ function setupControls(ob) {
         'Fragment Shader code': function(){
 
             picoModal({
-                content: '<h3 style="margin: 5px; padding: 0px 0px 10px; font-family: sans-serif;">Vertex Shader</h3>' +
+                content: '<h3 style="margin: 5px; padding: 0px 0px 10px; font-family: sans-serif;">Fragment Shader</h3>' +
                 '<pre style="overflow: scroll; height: 470px; margin: 5px;">'+ops.fragmentShader+'</pre>',
                 closeButton: true,
                 width: "75%"
@@ -323,7 +323,7 @@ function addAxisLabels() {
         else {
             text.position.z = TEXT_AXIS_OFFSET;
         }
-        
+
         text.rotation = camera.rotation;
         text.lookAt(camera.position);
 
