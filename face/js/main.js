@@ -1,12 +1,12 @@
 var camera, scene, renderer, controls;
 var mesh, material;
 var GRID_SIZE = 2;
-var clock = new THREE.Clock(true);
+var clock = new THREE.Clock();
 var ops = {
   face_loaded: false,
   demo: false,
   side: THREE.FrontSide,
-  side_duration: 4100
+  side_duration: 2000
 }
 
 init();
@@ -138,7 +138,7 @@ function init(){
 
       "void main() {",
       "   const float timestep = 50.0;", // interval in ms to change opacity. Decrease for smoother opacity increase.
-      "   const float duration = 4200.0;", // cutoff time value in ms, after which opacity skips to 1
+      "   const float duration = 3200.0;", // cutoff time value in ms, after which opacity skips to 1
       "   float opacity_magnitude = 0.0;", // value store for final opacity in this draw
       "   if( time > duration) { opacity_magnitude = 1.0; } else {", // if opacity has been increasing for longer than the cutoff, skip for loop and set opacity to 1
       "     for(float i = 0.0; i < duration; i += timestep) {", /// use for loop to calculate opacity for every timestep - this is to preserve opacity between frames
@@ -185,7 +185,7 @@ function init(){
       setupControls(ops.uniforms);
     }
 
-    // THREE.Clock(true);
+    THREE.Clock(true);
 
   }, onProgress, onError );
 }
