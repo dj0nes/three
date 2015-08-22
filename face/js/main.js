@@ -171,7 +171,8 @@ function init(){
             "         float apparent_randomness = pow(mod(randval * 100.0, 31.0),4.0);", // pow helps magnify difference between similar vNormal values
             "         float denominator =  apparent_randomness * sf + 1.0;", // bigger denominator = slower increase in opacity, + 1 to avoid div/0
             // acceleration of opacity growth
-            "         float time_scale = pow(3.0 * i/(duration), 26.0);", // as i->duration, increase acceleration of opacity growth by scaling numerator
+            "         float fudge_factor = 3.0;", // quickest way to change speed of opacity_magnitude growth
+            "         float time_scale = pow(fudge_factor * i/(duration), 26.0);", // as i->duration, increase acceleration of opacity growth by scaling numerator
             "         float numerator = time_scale * abs(randval);", // abs(randval) to disallow decreasing opacity, potentially remove for greater diversity
             "         opacity_magnitude += numerator/denominator;",
             "       }",
