@@ -138,7 +138,7 @@ function init(){
 
       "void main() {",
       "   const float timestep = 50.0;", // interval in ms to change opacity. Decrease for smoother opacity increase.
-      "   const float duration = 6500.0;", // cutoff time value in ms, after which opacity skips to 1
+      "   const float duration = 4200.0;", // cutoff time value in ms, after which opacity skips to 1
       "   float opacity_magnitude = 0.0;", // value store for final opacity in this draw
       "   if( time > duration) { opacity_magnitude = 1.0; } else {", // if opacity has been increasing for longer than the cutoff, skip for loop and set opacity to 1
       "     for(float i = 0.0; i < duration; i += timestep) {", /// use for loop to calculate opacity for every timestep - this is to preserve opacity between frames
@@ -146,10 +146,10 @@ function init(){
       "         float randval = snoise( vec2(vNormal.z, i) );", // -1 <= randval <= 1
       "         float sf = pow(1.0+abs(vNormal.y),8.0);",
       // scale adjacent faces with similar normals at different rates
-      "         float apparent_randomness = pow(mod(randval * 100.0, 31.0),4.0);", // pow helps magnify difference between similar vNormal values
+      "         float apparent_randomness = pow(mod(randval * 100.0, 31.0),3.0);", // pow helps magnify difference between similar vNormal values
       "         float denominator =  apparent_randomness * sf + 1.0;", // bigger denominator = slower increase in opacity, + 1 to avoid div/0
       // acceleration of opacity growth
-      "         float fudge_factor = 2.25;", // quickest way to change speed of opacity_magnitude growth
+      "         float fudge_factor = 2.35;", // quickest way to change speed of opacity_magnitude growth
       "         float time_scale = pow(fudge_factor * i/(duration), 32.0);", // as i->duration, increase acceleration of opacity growth by scaling numerator
       "         float numerator = time_scale * abs(randval);", // abs(randval) to disallow decreasing opacity, potentially remove for greater diversity
       "         opacity_magnitude += numerator/denominator;",
