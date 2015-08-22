@@ -148,6 +148,8 @@ function init(){
             "varying vec4 Position;",
             "precision highp float;",
 
+
+
             THREE.ShaderChunk[ "common" ],
             THREE.ShaderChunk[ "logdepthbuf_pars_fragment" ],
 
@@ -156,21 +158,25 @@ function init(){
             "}",
 
             "void main() {",
+            "   vec4 shutupwebgl = Position;",
             "   const float timestep = 50.0;", // interval in ms to change opacity. Decrease for smoother opacity increase.
             "   const float duration = 6000.0;", // cutoff time value in ms, after which opacity skips to 1
             "   float opacity_magnitude = 0.0;", // value store for final opacity in this draw
             "   if( time > duration) { opacity_magnitude = 1.0; } else {", // if opacity has been increasing for longer than the cutoff, skip for loop and set opacity to 1
             "     for(float i = 0.0; i < duration; i += timestep) {", /// use for loop to calculate opacity for every timestep - this is to preserve opacity between frames
-            //"     opacity_magnitude += abs(( snoise( vec2(vNormal.x, floor(time/timestep)))) ) + (pow(time/duration, 3.0) - 1.25) ;", // * (time/2000.0 - 2.5)",
             "       if( i > time) { break; } else {", // this is where the loop will actually break
-            "         float randval = snoise( vec2(vNormal.y*vNormal.z, i) );", // -1 <= randval <= 1
-            "         float sf = abs(vNormal.y) + .01;", // scale the denominator by this amount
-            "         float denominator = pow(mod(randval * 100.0, 31.0),2.0) * sf * 10.0 + 1.0;", // bigger denominator = slower increase in opacity
-            "         opacity_magnitude += abs(randval)/denominator ;", // abs(randval) to disallow decreasing opacity, potentially remove for greater diversity
+            "         float randval = snoise( vec2(vNormal.z, i) );", // -1 <= randval <= 1
+            "         float sf = pow(1.0+abs(vNormal.y),8.0);",
+            // scale adjacent faces with similar normals at different rates
+            "         float apparent_randomness = pow(mod(randval * 100.0, 31.0),4.0);", // pow helps magnify difference between similar vNormal values
+            "         float denominator =  apparent_randomness * sf + 1.0;", // bigger denominator = slower increase in opacity, + 1 to avoid div/0
+            // acceleration of opacity growth
+            "         float time_scale = pow(3.0 * i/(duration), 26.0);", // as i->duration, increase acceleration of opacity growth by scaling numerator
+            "         float numerator = time_scale * abs(randval);", // abs(randval) to disallow decreasing opacity, potentially remove for greater diversity
+            "         opacity_magnitude += numerator/denominator;",
             "       }",
             "     }",
             "    }",
-            //"   opacity_magnitude += (pow(time/duration, 3.0) - 1.25);",
             "   gl_FragColor = vec4( amplitude * normalize( vNormal ) + offset, opacity_magnitude * opacity);",
             "   gl_FragColor.r = gl_FragColor.r * red_channel;",
             "   gl_FragColor.g = gl_FragColor.g * green_channel;",
