@@ -57,8 +57,8 @@ function init(){
     camera.position.z = 5.5;
   } else {
     // demo mode yeeeeaaaaaaa
-    camera.position.x = 1.5;
-    camera.position.y = 1;
+    camera.position.x = 1.75;
+    camera.position.y = 1.25;
     camera.position.z = 4.5;
   }
 
@@ -106,7 +106,6 @@ function init(){
 
     ops.vertexShader = [
       "varying vec3 vNormal;",
-      "varying vec4 Position;",
       THREE.ShaderChunk[ "common" ],
       THREE.ShaderChunk[ "morphtarget_pars_vertex" ],
       THREE.ShaderChunk[ "logdepthbuf_pars_vertex" ],
@@ -116,8 +115,6 @@ function init(){
       THREE.ShaderChunk[ "morphtarget_vertex" ],
       THREE.ShaderChunk[ "default_vertex" ],
       THREE.ShaderChunk[ "logdepthbuf_vertex" ],
-      "Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
-      // "ctime = time;",
       "}"
     ].join("\n");
 
@@ -130,18 +127,16 @@ function init(){
       "uniform float blue_channel;",
       "uniform float time;",
       "varying vec3 vNormal;",
-      "varying vec4 Position;",
       "precision highp float;",
 
       THREE.ShaderChunk[ "common" ],
       THREE.ShaderChunk[ "logdepthbuf_pars_fragment" ],
 
       "float snoise(in vec2 co){", //https://www.shadertoy.com/view/ltB3zD
-      "return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);",
+      "   return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);",
       "}",
 
       "void main() {",
-      "   vec4 shutupwebgl = Position;",
       "   const float timestep = 50.0;", // interval in ms to change opacity. Decrease for smoother opacity increase.
       "   const float duration = 2000.0;", // cutoff time value in ms, after which opacity skips to 1
       "   float opacity_magnitude = 0.0;", // value store for final opacity in this draw
