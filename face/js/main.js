@@ -57,9 +57,9 @@ function init(){
     camera.position.z = 5.5;
   } else {
     // demo mode yeeeeaaaaaaa
-    camera.position.x = 1.75;
+    camera.position.x = 2.75;
     camera.position.y = 1.25;
-    camera.position.z = 4.5;
+    camera.position.z = 5.5;
   }
 
   // prepare controls (OrbitControls)
@@ -93,11 +93,11 @@ function init(){
 
     ops.uniforms = {
       "opacity" : { type: "f", value: 1.0, range: [0,1] },
-      "amplitude" : { type: "f", value: 1.20, range: [-1,5] },
-      "offset" : { type: "f", value: 0.0, range: [-2.0,2.0] },
-      "red_channel" : { type: "f", value: 1.0, range: [-1,2] },
-      "green_channel" : { type: "f", value: 1.0, range: [-1,2] },
-      "blue_channel" : { type: "f", value: 0.5, range: [-1,2] },
+      "amplitude" : { type: "f", value: -2.7, range: [-5,5] },
+      "offset" : { type: "f", value: -0.35, range: [-2.0,2.0] },
+      "red_channel" : { type: "f", value: 0.45, range: [-1,2] },
+      "green_channel" : { type: "f", value: 0.4, range: [-1,2] },
+      "blue_channel" : { type: "f", value: 0.3, range: [-1,2] },
       "time" : { type: "f", value: 0.0, range: [0,10000] }
     };
 
@@ -158,9 +158,9 @@ function init(){
       "    }",
       "   vec3 vnorm = normalize( vNormal );",
       "   vec3 colors = vnorm;",
-      "   colors.r = dot(vnorm.x, vnorm.z);",
-      "   colors.g = dot(vnorm.y, vnorm.x);",
-      "   colors.b = dot(vnorm.y, vnorm.x);",
+      "   colors.r = vnorm.r;",
+      "   colors.g = dot(vnorm, normalize(vec3(-1,-1000,-3)));",
+      "   colors.b = -vnorm.x;",
       "   gl_FragColor = vec4( amplitude * colors + offset, opacity_magnitude * opacity);",
       "   gl_FragColor.r = gl_FragColor.r * red_channel;",
       "   gl_FragColor.g = gl_FragColor.g * green_channel;",
