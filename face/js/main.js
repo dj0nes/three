@@ -4,9 +4,10 @@ var GRID_SIZE = 2;
 var clock = new THREE.Clock();
 var ops = {
   face_loaded: false,
-  demo: false,
+  demo: true,
   side: THREE.FrontSide,
-  side_duration: 2000
+  side_duration: 2000,
+  rotate: false
 }
 
 init();
@@ -14,8 +15,11 @@ animate();
 
 function init(){
   params = getSearchParameters();
-  if( params.demo !== undefined && params.demo == "true" ) {
-    ops.demo = true;
+  if( params.demo !== undefined && params.demo == "false" ) {
+    ops.demo = false;
+  }
+  if( params.rotate !== undefined && params.rotate == "true" ) {
+    ops.rotate = true;
   }
   renderer = new THREE.WebGLRenderer( { antialias: true });
   renderer.setPixelRatio(window.devicePixelRatio);
@@ -94,10 +98,10 @@ function init(){
     ops.uniforms = {
       "opacity" : { type: "f", value: 1.0, range: [0,1] },
       "amplitude" : { type: "f", value: -2.7, range: [-5,5] },
-      "offset" : { type: "f", value: -0.35, range: [-2.0,2.0] },
+      "offset" : { type: "f", value: -0.35, range: [-2,2] },
       "red_channel" : { type: "f", value: 0.45, range: [-1,2] },
       "green_channel" : { type: "f", value: 0.4, range: [-1,2] },
-      "blue_channel" : { type: "f", value: 0.3, range: [-1,2] },
+      "blue_channel" : { type: "f", value: 0.4, range: [-1,2] },
       "time" : { type: "f", value: 0.0, range: [0,10000] }
     };
 
@@ -200,6 +204,10 @@ function animate() {
 
   if ( running_time > ops.side_duration && ops.side != THREE.DoubleSide ) {
     ops.model.children[0].material.side = THREE.DoubleSide;
+  }
+
+  if ( ops.rotate ) {
+    ops.model.rotateOnAxis( new THREE.Vector3(0,1,0), 1.5 * Math.PI/180 );
   }
 
   renderer.render(scene, camera);
