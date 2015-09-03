@@ -21,7 +21,8 @@ function init(){
   if( params.rotate !== undefined && params.rotate == "true" ) {
     ops.rotate = true;
   }
-  renderer = new THREE.WebGLRenderer( { antialias: true });
+  renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true });
+  renderer.setClearColor( 0xffffff, 0 ); // the default
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild(renderer.domElement);
@@ -31,11 +32,11 @@ function init(){
   camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, .1, 1000);
   scene = new THREE.Scene();
   var light = new THREE.AmbientLight( 0x404040 ); // soft white light
-  scene.add( light );
+  // scene.add( light );
 
   var directionalLight = new THREE.DirectionalLight(0xffffff);
   directionalLight.position.set(1, 1, 1).normalize();
-  scene.add(directionalLight);
+  // scene.add(directionalLight);
 
   window.addEventListener('resize', onWindowResize, false);
 
@@ -175,6 +176,42 @@ function init(){
 
     ].join("\n");
 
+    ops.vertexShaderVanilla = [
+        "varying vec3 vNormal;",
+        THREE.ShaderChunk[ "common" ],
+        THREE.ShaderChunk[ "morphtarget_pars_vertex" ],
+        THREE.ShaderChunk[ "logdepthbuf_pars_vertex" ],
+
+        "void main() {",
+        "   vNormal = normalize( normalMatrix * normal );",
+            THREE.ShaderChunk[ "morphtarget_vertex" ],
+            THREE.ShaderChunk[ "default_vertex" ],
+            THREE.ShaderChunk[ "logdepthbuf_vertex" ],
+        "}"
+    ].join("\n");
+
+    ops.fragmentShaderVanilla = [
+        "uniform float opacity;",
+        "uniform float amplitude;",
+        "uniform float offset;",
+        "uniform float red_channel;",
+        "uniform float green_channel;",
+        "uniform float blue_channel;",
+        "varying vec3 vNormal;",
+        THREE.ShaderChunk[ "common" ],
+        THREE.ShaderChunk[ "logdepthbuf_pars_fragment" ],
+
+        "void main() {",
+        "   gl_FragColor = vec4( amplitude * normalize( vNormal ) + offset, opacity);",
+        "   gl_FragColor.r = gl_FragColor.r * red_channel;",
+        "   gl_FragColor.g = gl_FragColor.g * green_channel;",
+        "   gl_FragColor.b = gl_FragColor.b * blue_channel;",
+            THREE.ShaderChunk[ "logdepthbuf_fragment" ],
+
+        "}"
+
+        ].join("\n");
+
     ops.model.children[0].material = new THREE.ShaderMaterial({
       transparent: true,
       // side: THREE.DoubleSide,
@@ -212,6 +249,7 @@ function animate() {
 
   renderer.render(scene, camera);
   controls.update(clock.getDelta());
+
   if( !ops.demo ) {
 
     ops.labels.map(arrLook);
