@@ -237,15 +237,18 @@ function animate() {
 
   if (ops.face_loaded) {
     ops.uniforms["time"].value = running_time;
+
+    if ( ops.rotate && ops.model.rotateOnAxis ) {
+      ops.model.rotateOnAxis( new THREE.Vector3(0,1,0), 1.5 * Math.PI/180 );
+    }
+
   }
 
   if ( running_time > ops.side_duration && ops.side != THREE.DoubleSide ) {
     ops.model.children[0].material.side = THREE.DoubleSide;
   }
 
-  if ( ops.rotate ) {
-    ops.model.rotateOnAxis( new THREE.Vector3(0,1,0), 1.5 * Math.PI/180 );
-  }
+
 
   renderer.render(scene, camera);
   controls.update(clock.getDelta());
