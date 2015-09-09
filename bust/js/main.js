@@ -238,7 +238,7 @@ function animate() {
   if (ops.face_loaded) {
     ops.uniforms["time"].value = running_time;
 
-    if ( ops.rotate && ops.model.rotateOnAxis ) {
+    if ( ops.rotate && ops.model.rotateOnAxis && running_time - ops.side_duration * .75 > 0 ) {
       ops.model.rotateOnAxis( new THREE.Vector3(0,1,0), 1.5 * Math.PI/180 );
     }
 
